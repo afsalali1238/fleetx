@@ -2535,29 +2535,29 @@ function renderScreenAlerts() {
   let critT = evs.filter(e=>e.sev==='critical').length;
   let warnT = evs.filter(e=>e.sev==='warning').length;
 
-  let listHtml = evs.length ? evs.map(e => \`
-    <div class="al-feed-item \${getClass(e.sev)}">
-      <div style="font-size:15px">\${getIcon(e.sev)}</div>
+  let listHtml = evs.length ? evs.map(e => `
+    <div class="al-feed-item ${getClass(e.sev)}">
+      <div style="font-size:15px">${getIcon(e.sev)}</div>
       <div style="flex:1">
-        <div style="font-weight:600;font-size:12px">\${e.msg} — \${e.aid}</div>
+        <div style="font-weight:600;font-size:12px">${e.msg} — ${e.aid}</div>
         <div style="font-size:10.5px;color:var(--dim)">System generated alert for asset</div>
       </div>
-      <div class="mono" style="font-size:9.5px;color:var(--dim)">\${e.ts}</div>
+      <div class="mono" style="font-size:9.5px;color:var(--dim)">${e.ts}</div>
     </div>
-  \`).join('') : '<div style="font-size:11px;color:var(--dim)">No alerts available. Run simulation to generate events.</div>';
+  `).join('') : '<div style="font-size:11px;color:var(--dim)">No alerts available. Run simulation to generate events.</div>';
 
-  container.innerHTML = \`
+  container.innerHTML = `
   <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
-    <div class="sc"><div class="sc-lbl">New Today</div><div class="sc-val cw">\${newT}</div><div class="sc-sub">Since 00:00</div></div>
-    <div class="sc"><div class="sc-lbl">Critical</div><div class="sc-val cr">\${critT}</div><div class="sc-sub">Needs attention</div></div>
-    <div class="sc"><div class="sc-lbl">Warning</div><div class="sc-val cy">\${warnT}</div><div class="sc-sub">Overspeed · geofence exit</div></div>
+    <div class="sc"><div class="sc-lbl">New Today</div><div class="sc-val cw">${newT}</div><div class="sc-sub">Since 00:00</div></div>
+    <div class="sc"><div class="sc-lbl">Critical</div><div class="sc-val cr">${critT}</div><div class="sc-sub">Needs attention</div></div>
+    <div class="sc"><div class="sc-lbl">Warning</div><div class="sc-val cy">${warnT}</div><div class="sc-sub">Overspeed · geofence exit</div></div>
     <div class="sc"><div class="sc-lbl">WhatsApp Sent</div><div class="sc-val cg">3</div><div class="sc-sub">This week: 21</div></div>
   </div>
   <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;padding:14px">
     <div class="panel-box" style="margin-bottom:0">
       <div class="panel-hdr">Alerts — Live Feed</div>
       <div style="padding:10px 12px">
-        \${listHtml}
+        ${listHtml}
       </div>
     </div>
     <div>
@@ -2577,7 +2577,7 @@ function renderScreenAlerts() {
       </div>
     </div>
   </div>
-  \`;
+  `;
 }
 
 function renderClient() {
@@ -2585,9 +2585,9 @@ function renderClient() {
   if(!container) return;
   let activeL = CLIENT_LINKS[0]; // mock active
   
-  container.innerHTML = \`
+  container.innerHTML = `
   <div class="stats-bar" style="grid-template-columns:repeat(3,1fr)">
-    <div class="sc"><div class="sc-lbl">Active Share Links</div><div class="sc-val cw">\${CLIENT_LINKS.length}</div><div class="sc-sub">Across 4 vendors</div></div>
+    <div class="sc"><div class="sc-lbl">Active Share Links</div><div class="sc-val cw">${CLIENT_LINKS.length}</div><div class="sc-sub">Across 4 vendors</div></div>
     <div class="sc"><div class="sc-lbl">Opened Today</div><div class="sc-val cb">23</div><div class="sc-sub">No login required</div></div>
     <div class="sc"><div class="sc-lbl">Avg ETA Accuracy</div><div class="sc-val cg">±3 min</div><div class="sc-sub">Live traffic-adjusted</div></div>
   </div>
@@ -2598,14 +2598,14 @@ function renderClient() {
         <div style="text-align:center;font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.5px;margin-bottom:10px">● TRACKING</div>
         <div style="text-align:center;font-size:32px;margin-bottom:6px">🚛</div>
         <div style="text-align:center;font-size:13px;font-weight:600;margin-bottom:2px">Estimated arrival</div>
-        <div style="text-align:center;font-size:22px;font-weight:700;color:var(--accent);margin-bottom:14px">\${activeL.eta}</div>
+        <div style="text-align:center;font-size:22px;font-weight:700;color:var(--accent);margin-bottom:14px">${activeL.eta}</div>
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px">
           <div style="font-size:9px;color:var(--dim);font-family:var(--mono);text-transform:uppercase;margin-bottom:3px">Status</div>
-          <div style="font-size:12px;font-weight:600">\${activeL.status}</div>
+          <div style="font-size:12px;font-weight:600">${activeL.status}</div>
         </div>
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:14px">
           <div style="font-size:9px;color:var(--dim);font-family:var(--mono);text-transform:uppercase;margin-bottom:3px">Vehicle</div>
-          <div style="font-size:12px;font-weight:600">\${activeL.vehicle}</div>
+          <div style="font-size:12px;font-weight:600">${activeL.vehicle}</div>
         </div>
         <div style="text-align:center;font-family:var(--mono);font-size:9px;color:var(--muted)">Tracked by dozr · zero login</div>
       </div>
@@ -2620,12 +2620,12 @@ function renderClient() {
         </div>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn-primary" onclick="showToast('Link copied — \${activeL.url}')">Copy Share Link</button>
+        <button class="btn-primary" onclick="showToast('Link copied — ${activeL.url}')">Copy Share Link</button>
         <button class="btn-ghost" onclick="showToast('Generating QR code...')">QR Code</button>
       </div>
     </div>
   </div>
-  \`;
+  `;
 }
 
 function renderTimesheet() {
@@ -2637,11 +2637,11 @@ function renderTimesheet() {
   let movingH = TIMESHEETS.reduce((sum, t) => sum + t.moving, 0);
   let stopH = TIMESHEETS.reduce((sum, t) => sum + t.stopped, 0);
 
-  container.innerHTML = \`
+  container.innerHTML = `
   <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
-    <div class="sc"><div class="sc-lbl">Drivers Active</div><div class="sc-val cg">\${TIMESHEETS.length}</div><div class="sc-sub">Of \${ASSETS.length} assets</div></div>
-    <div class="sc"><div class="sc-lbl">Total Hours Today</div><div class="sc-val cw">\${totalH.toFixed(1)}h</div><div class="sc-sub">\${TIMESHEETS.length} drivers logged</div></div>
-    <div class="sc"><div class="sc-lbl">Idle Hours</div><div class="sc-val cy">\${idleH.toFixed(1)}h</div><div class="sc-sub">≈ AED \${(idleH*37.5).toFixed(0)} wasted</div></div>
+    <div class="sc"><div class="sc-lbl">Drivers Active</div><div class="sc-val cg">${TIMESHEETS.length}</div><div class="sc-sub">Of ${ASSETS.length} assets</div></div>
+    <div class="sc"><div class="sc-lbl">Total Hours Today</div><div class="sc-val cw">${totalH.toFixed(1)}h</div><div class="sc-sub">${TIMESHEETS.length} drivers logged</div></div>
+    <div class="sc"><div class="sc-lbl">Idle Hours</div><div class="sc-val cy">${idleH.toFixed(1)}h</div><div class="sc-sub">≈ AED ${(idleH*37.5).toFixed(0)} wasted</div></div>
     <div class="sc"><div class="sc-lbl">Overtime Flags</div><div class="sc-val cr">1</div><div class="sc-sub">Ramesh K. — 9.5h shift</div></div>
   </div>
   <div class="panel-box" style="margin:14px">
@@ -2649,23 +2649,23 @@ function renderTimesheet() {
     <table class="tbl">
       <thead><tr><th>Driver</th><th>Vehicle</th><th>Start</th><th>End</th><th>Total</th><th>Moving</th><th>Idle</th><th>Stopped</th><th style="width:120px">Activity</th></tr></thead>
       <tbody>
-        \${TIMESHEETS.map(t => \`
+        ${TIMESHEETS.map(t => `
         <tr>
-          <td><strong>\${t.driver}</strong></td>
-          <td><span class="badge \${t.badge}">\${t.asset}</span></td>
-          <td class="mono">\${t.start}</td>
-          <td class="mono" \${t.end==='Active'?'style="color:var(--green)"':''}>\${t.end}\${t.end==='Active'?' ●':''}</td>
-          <td class="mono">\${t.total}h</td>
-          <td class="mono">\${t.moving}h</td>
-          <td class="mono cy">\${t.idle}h</td>
-          <td class="mono">\${t.stopped}h</td>
-          <td><div class="ts-bar"><span style="width:\${t.ts1}%"></span><span style="width:\${t.ts2}%"></span><span style="width:\${t.ts3}%"></span></div></td>
-        </tr>\`).join('')}
-        <tr style="background:var(--surface2)"><td colspan="4" style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--dim)">DAILY TOTALS — \${TIMESHEETS.length} DRIVERS</td><td class="mono" style="font-weight:600">\${totalH.toFixed(1)}h</td><td class="mono" style="font-weight:600">\${movingH.toFixed(1)}h</td><td class="mono cy" style="font-weight:600">\${idleH.toFixed(1)}h</td><td class="mono" style="font-weight:600">\${stopH.toFixed(1)}h</td><td></td></tr>
+          <td><strong>${t.driver}</strong></td>
+          <td><span class="badge ${t.badge}">${t.asset}</span></td>
+          <td class="mono">${t.start}</td>
+          <td class="mono" ${t.end==='Active'?'style="color:var(--green)"':''}>${t.end}${t.end==='Active'?' ●':''}</td>
+          <td class="mono">${t.total}h</td>
+          <td class="mono">${t.moving}h</td>
+          <td class="mono cy">${t.idle}h</td>
+          <td class="mono">${t.stopped}h</td>
+          <td><div class="ts-bar"><span style="width:${t.ts1}%"></span><span style="width:${t.ts2}%"></span><span style="width:${t.ts3}%"></span></div></td>
+        </tr>`).join('')}
+        <tr style="background:var(--surface2)"><td colspan="4" style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--dim)">DAILY TOTALS — ${TIMESHEETS.length} DRIVERS</td><td class="mono" style="font-weight:600">${totalH.toFixed(1)}h</td><td class="mono" style="font-weight:600">${movingH.toFixed(1)}h</td><td class="mono cy" style="font-weight:600">${idleH.toFixed(1)}h</td><td class="mono" style="font-weight:600">${stopH.toFixed(1)}h</td><td></td></tr>
       </tbody>
     </table>
   </div>
-  \`;
+  `;
 }
 
 function renderCmdK(q) {
