@@ -1099,7 +1099,12 @@ class SimulatorEngine {
   constructor() {
     this._t0       = Date.now();
     this._lastTick = Date.now();
-    this._events   = [];
+    this._events   = [
+      { type:'MAINT_DUE', sev:'warning', aid:'KSP-005', msg:'Maintenance due in 40h', ts:new Date(Date.now()-3600000).toLocaleTimeString('en-GB') },
+      { type:'OVERSPEED', sev:'warning', aid:'KSP-001', msg:'Overspeed — 94 km/h (Limit: 80)', ts:new Date(Date.now()-7200000).toLocaleTimeString('en-GB') },
+      { type:'DTC_FAULT', sev:'critical', aid:'KSP-004', msg:'DTC P0115 Coolant Temp Circuit Malfunction', ts:new Date(Date.now()-14400000).toLocaleTimeString('en-GB') },
+      { type:'GEOFENCE', sev:'info', aid:'KSP-008', msg:'Exited KIZAD site', ts:new Date(Date.now()-21600000).toLocaleTimeString('en-GB') }
+    ];
     this._fired    = new Set();
     this._states   = SimulatorEngine.CONFIGS.map(c => this._init(c));
   }
