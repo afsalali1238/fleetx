@@ -823,158 +823,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 
 <!-- TRIP HISTORY & PLAYBACK -->
 <div class="screen" id="screen-history">
-  <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
-    <div class="sc"><div class="sc-lbl">Trips Today</div><div class="sc-val cw">17</div><div class="sc-sub">Across 8 assets</div></div>
-    <div class="sc"><div class="sc-lbl">Distance Today</div><div class="sc-val cb">386 km</div><div class="sc-sub">Trucks + loaders</div></div>
-    <div class="sc"><div class="sc-lbl">Avg Speed</div><div class="sc-val cg">47 km/h</div><div class="sc-sub">Moving segments only</div></div>
-    <div class="sc"><div class="sc-lbl">Events Flagged</div><div class="sc-val cr">3</div><div class="sc-sub">1 overspeed · 2 long stops</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:280px 1fr;gap:14px;padding:14px">
-    <div class="panel-box" style="margin-bottom:0">
-      <div class="panel-hdr">Select Trip <span style="font-size:9px;color:var(--dim);font-weight:400">12 months retained</span></div>
-      <div style="padding:10px 12px">
-        <div class="form-row" style="margin-bottom:8px"><label class="form-label">Date</label><input class="form-input" type="date" value="2026-07-09"/></div>
-        <div class="trip-item sel"><div><div style="font-weight:600;font-size:11.5px">KSP-004 · Trip 1</div><div class="mono" style="font-size:9px;color:var(--dim)">06:42 → 09:15 · 61 km</div></div><span class="badge bb">DEPOT→JAFZA</span></div>
-        <div class="trip-item"><div><div style="font-weight:600;font-size:11.5px">KSP-004 · Trip 2</div><div class="mono" style="font-size:9px;color:var(--dim)">11:20 → 13:05 · 48 km</div></div><span class="badge bg">JAFZA→SITE</span></div>
-        <div class="trip-item"><div><div style="font-weight:600;font-size:11.5px">KSP-004 · Trip 3</div><div class="mono" style="font-size:9px;color:var(--dim)">15:40 → 17:58 · 33 km</div></div><span class="badge by">RETURN</span></div>
-      </div>
-    </div>
-    <div class="panel-box" style="margin-bottom:0">
-      <div class="panel-hdr">KSP-004 · MAN TGX 18.500 Truck — Trip 1 <span class="badge bb">142 km · 3 trips</span></div>
-      <div style="padding:12px 14px">
-        <svg viewBox="0 0 640 220" style="width:100%;height:220px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
-          <path d="M40,190 Q160,150 260,120 Q380,90 460,60 L440,45 Q360,80 250,108 Q150,138 40,175Z" fill="none"/>
-          <polyline points="40,190 120,168 200,140 260,120 320,100 380,90 420,60 460,45 520,38" fill="none" stroke="var(--green)" stroke-width="3"/>
-          <polyline points="380,90 420,60" fill="none" stroke="var(--red)" stroke-width="4"/>
-          <circle cx="40" cy="190" r="6" fill="var(--green)"/><text x="40" y="205" fill="var(--dim)" font-size="8" font-family="Space Mono" text-anchor="middle">DEPOT 06:42</text>
-          <circle cx="260" cy="120" r="6" fill="var(--yellow)"/><text x="260" y="112" fill="var(--yellow)" font-size="8" font-family="Space Mono" text-anchor="middle">STOP 22m</text>
-          <circle cx="400" cy="75" r="6" fill="var(--red)"/><text x="400" y="67" fill="var(--red)" font-size="8" font-family="Space Mono" text-anchor="middle">94 km/h</text>
-          <circle cx="520" cy="38" r="6" fill="var(--red)"/><text x="520" y="30" fill="var(--dim)" font-size="8" font-family="Space Mono" text-anchor="middle">JAFZA 09:15</text>
-        </svg>
-        <div class="scrub-wrap">
-          <div class="scrub-track">
-            <div class="scrub-fill" style="width:52%"></div>
-            <div class="scrub-ev" style="left:38%;background:var(--yellow)" title="Stop 22min"></div>
-            <div class="scrub-ev" style="left:62%;background:var(--red)" title="Overspeed 94km/h"></div>
-            <div class="scrub-handle" style="left:52%">
-              <div class="scrub-lbl" style="color:var(--accent)">08:02</div>
-            </div>
-          </div>
-          <div class="scrub-ends"><span>06:42 · DEPOT</span><span>▶ Playback</span><span>09:15 · JAFZA</span></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:5px;font-size:11px;margin-top:8px">
-          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--green)"><span class="mono" style="color:var(--dim);font-size:9px">06:42</span> &nbsp;Depart DIP Depot</div>
-          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--yellow)"><span class="mono" style="color:var(--dim);font-size:9px">07:38</span> &nbsp;Stopped 22 min · Al Quoz</div>
-          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--red)"><span class="mono" style="color:var(--dim);font-size:9px">08:02</span> &nbsp;Overspeed — 94 km/h in 80 zone</div>
-          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--green)"><span class="mono" style="color:var(--dim);font-size:9px">09:15</span> &nbsp;Arrived JAFZA</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Rendered by renderHistory() -->
 </div>
 
 <!-- ALERTS CENTER -->
 <div class="screen" id="screen-alerts">
-  <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
-    <div class="sc"><div class="sc-lbl">New Today</div><div class="sc-val cw">4</div><div class="sc-sub">Since 00:00</div></div>
-    <div class="sc"><div class="sc-lbl">Critical</div><div class="sc-val cr">1</div><div class="sc-sub">Fuel theft — KSP-003</div></div>
-    <div class="sc"><div class="sc-lbl">Warning</div><div class="sc-val cy">2</div><div class="sc-sub">Overspeed · geofence exit</div></div>
-    <div class="sc"><div class="sc-lbl">WhatsApp Sent</div><div class="sc-val cg">3</div><div class="sc-sub">This week: 21</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;padding:14px">
-    <div class="panel-box" style="margin-bottom:0">
-      <div class="panel-hdr">Alerts — Today</div>
-      <div style="padding:10px 12px">
-        <div class="al-feed-item crit"><div style="font-size:15px">🚨</div><div style="flex:1"><div style="font-weight:600;font-size:12px">Possible fuel theft — KSP-003</div><div style="font-size:10.5px;color:var(--dim)">−48 L while parked, ignition off · Jebel Ali yard · WhatsApp sent</div></div><div class="mono" style="font-size:9.5px;color:var(--dim)">13:10</div></div>
-        <div class="al-feed-item warn"><div style="font-size:15px">🏎️</div><div style="flex:1"><div style="font-weight:600;font-size:12px">Overspeed — KSP-004</div><div style="font-size:10.5px;color:var(--dim)">94 km/h in 80 zone · Sheikh Zayed Rd</div></div><div class="mono" style="font-size:9.5px;color:var(--dim)">08:02</div></div>
-        <div class="al-feed-item warn"><div style="font-size:15px">📍</div><div style="flex:1"><div style="font-weight:600;font-size:12px">Geofence exit — KSP-001</div><div style="font-size:10.5px;color:var(--dim)">Left Al Quoz outside working hours</div></div><div class="mono" style="font-size:9.5px;color:var(--dim)">19:48</div></div>
-        <div class="al-feed-item info"><div style="font-size:15px">🔌</div><div style="flex:1"><div style="font-weight:600;font-size:12px">Device offline — KSP-007</div><div style="font-size:10.5px;color:var(--dim)">No data for 4+ hours · possible power cut</div></div><div class="mono" style="font-size:9.5px;color:var(--dim)">06:30</div></div>
-        <div class="al-feed-item ok"><div style="font-size:15px">✅</div><div style="flex:1"><div style="font-weight:600;font-size:12px">Back online — KSP-007</div><div style="font-size:10.5px;color:var(--dim)">Reconnected · resolved</div></div><div class="mono" style="font-size:9.5px;color:var(--dim)">10:12</div></div>
-      </div>
-    </div>
-    <div>
-      <div class="panel-box">
-        <div class="panel-hdr">WhatsApp Routing Rules</div>
-        <div style="padding:6px 14px">
-          <div class="al-rule-row"><span>Fuel theft</span><span class="badge br">INSTANT</span></div>
-          <div class="al-rule-row"><span>Service overdue</span><span class="badge br">INSTANT</span></div>
-          <div class="al-rule-row"><span>Overspeed</span><span class="badge by">DAILY DIGEST</span></div>
-          <div class="al-rule-row"><span>Geofence exit (after hours)</span><span class="badge by">INSTANT</span></div>
-          <div class="al-rule-row"><span>Device offline &gt;4h</span><span class="badge bb">IN-APP ONLY</span></div>
-        </div>
-      </div>
-      <div class="panel-box" style="margin-bottom:0">
-        <div class="panel-hdr">Notes</div>
-        <div style="padding:10px 14px;font-size:11px;color:var(--dim);line-height:1.6">Rules are configurable per vehicle — threshold, active hours, WhatsApp vs in-app only. Defaults set at install; vendor tunes from here. Not every alert deserves a push — alert fatigue kills the feature.</div>
-      </div>
-    </div>
-  </div>
+  <!-- Rendered by renderScreenAlerts() -->
 </div>
 
 <!-- CLIENT TRACKING LINK -->
 <div class="screen" id="screen-client">
-  <div class="stats-bar" style="grid-template-columns:repeat(3,1fr)">
-    <div class="sc"><div class="sc-lbl">Active Share Links</div><div class="sc-val cw">6</div><div class="sc-sub">Across 4 vendors</div></div>
-    <div class="sc"><div class="sc-lbl">Opened Today</div><div class="sc-val cb">23</div><div class="sc-sub">No login required</div></div>
-    <div class="sc"><div class="sc-lbl">Avg ETA Accuracy</div><div class="sc-val cg">±3 min</div><div class="sc-sub">Live traffic-adjusted</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:22px;padding:24px 14px;align-items:start">
-    <div class="phone-frame">
-      <div class="phone-notch"></div>
-      <div class="phone-body">
-        <div style="text-align:center;font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.5px;margin-bottom:10px">● TRACKING</div>
-        <div style="text-align:center;font-size:32px;margin-bottom:6px">🚛</div>
-        <div style="text-align:center;font-size:13px;font-weight:600;margin-bottom:2px">Estimated arrival</div>
-        <div style="text-align:center;font-size:22px;font-weight:700;color:var(--accent);margin-bottom:14px">11:24 AM · 18 min</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px">
-          <div style="font-size:9px;color:var(--dim);font-family:var(--mono);text-transform:uppercase;margin-bottom:3px">Status</div>
-          <div style="font-size:12px;font-weight:600">En route · Sheikh Zayed Rd</div>
-        </div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:14px">
-          <div style="font-size:9px;color:var(--dim);font-family:var(--mono);text-transform:uppercase;margin-bottom:3px">Vehicle</div>
-          <div style="font-size:12px;font-weight:600">Flatbed · Dubai T-44782</div>
-        </div>
-        <div style="text-align:center;font-family:var(--mono);font-size:9px;color:var(--muted)">Tracked by dozr · zero login</div>
-      </div>
-    </div>
-    <div>
-      <div class="panel-box"><div class="panel-hdr">Feature Notes</div>
-        <div style="padding:10px 14px;font-size:11.5px;color:var(--dim);line-height:1.7">
-          <strong style="color:var(--text)">No login, link only</strong> — client opens a URL on any phone, no app install. Link expires when the job completes, or stays live for long-term hire.<br><br>
-          <strong style="color:var(--text)">ETA front and centre</strong> — calculated live from position + traffic. Everything else is secondary.<br><br>
-          <strong style="color:var(--text)">Strictly scoped data</strong> — one vehicle, current trip only. No fuel, no driver score, no fleet view. The vendor's business data stays the vendor's.<br><br>
-          <strong style="color:var(--text)">"Tracked by dozr" footer</strong> — every shared link is a lead for the next quarter's sales pipeline.
-        </div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn-primary" onclick="showToast('Link copied — share.dozr.com/t/8fq2')">Copy Share Link</button>
-        <button class="btn-ghost" onclick="showToast('Generating QR code...')">QR Code</button>
-      </div>
-    </div>
-  </div>
+  <!-- Rendered by renderClient() -->
 </div>
 
 <!-- TIMESHEET -->
 <div class="screen" id="screen-timesheet">
-  <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
-    <div class="sc"><div class="sc-lbl">Drivers Active</div><div class="sc-val cg">6</div><div class="sc-sub">Of 8 assets</div></div>
-    <div class="sc"><div class="sc-lbl">Total Hours Today</div><div class="sc-val cw">44.9h</div><div class="sc-sub">5 drivers logged</div></div>
-    <div class="sc"><div class="sc-lbl">Idle Hours</div><div class="sc-val cy">7.3h</div><div class="sc-sub">≈ AED 274 wasted</div></div>
-    <div class="sc"><div class="sc-lbl">Overtime Flags</div><div class="sc-val cr">1</div><div class="sc-sub">Ramesh K. — 9.5h shift</div></div>
-  </div>
-  <div class="panel-box" style="margin:14px">
-    <div class="panel-hdr">Timesheet — Today <span style="display:flex;gap:8px"><button class="btn-ghost" style="margin:0;padding:5px 12px;font-size:10px" onclick="showToast('Opening date range...')">📅 Date Range</button><button class="btn-primary" style="padding:5px 12px;font-size:10px" onclick="showToast('Exporting timesheet...')">⬇ Export</button></span></div>
-    <table class="tbl">
-      <thead><tr><th>Driver</th><th>Vehicle</th><th>Start</th><th>End</th><th>Total</th><th>Moving</th><th>Idle</th><th>Stopped</th><th style="width:120px">Activity</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Ramesh K.</strong></td><td><span class="badge br">KSP-001</span></td><td class="mono">06:30</td><td class="mono" style="color:var(--green)">Active ●</td><td class="mono">9.5h</td><td class="mono">4.2h</td><td class="mono cy">3.8h</td><td class="mono">1.5h</td><td><div class="ts-bar"><span style="width:44%"></span><span style="width:40%"></span><span style="width:16%"></span></div></td></tr>
-        <tr><td><strong>Imran S.</strong></td><td><span class="badge by">KSP-004</span></td><td class="mono">07:00</td><td class="mono" style="color:var(--green)">Active ●</td><td class="mono">8.9h</td><td class="mono">6.1h</td><td class="mono cy">1.2h</td><td class="mono">1.6h</td><td><div class="ts-bar"><span style="width:69%"></span><span style="width:13%"></span><span style="width:18%"></span></div></td></tr>
-        <tr><td><strong>Ahmed F.</strong></td><td><span class="badge by">KSP-004</span></td><td class="mono">06:42</td><td class="mono">15:30</td><td class="mono">8.8h</td><td class="mono">5.5h</td><td class="mono cy">0.8h</td><td class="mono">2.5h</td><td><div class="ts-bar"><span style="width:63%"></span><span style="width:9%"></span><span style="width:28%"></span></div></td></tr>
-        <tr><td><strong>Ravi M.</strong></td><td><span class="badge bb">KSP-005</span></td><td class="mono">08:00</td><td class="mono">16:00</td><td class="mono">8.0h</td><td class="mono">5.9h</td><td class="mono cy">0.6h</td><td class="mono">1.5h</td><td><div class="ts-bar"><span style="width:74%"></span><span style="width:8%"></span><span style="width:18%"></span></div></td></tr>
-        <tr style="background:var(--surface2)"><td colspan="4" style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--dim)">DAILY TOTALS — 5 DRIVERS</td><td class="mono" style="font-weight:600">44.9h</td><td class="mono" style="font-weight:600">28.9h</td><td class="mono cy" style="font-weight:600">7.3h</td><td class="mono" style="font-weight:600">8.7h</td><td></td></tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- Rendered by renderTimesheet() -->
 </div>
 
 </div></div>
@@ -1568,6 +1432,27 @@ let ZONES = [
   { name:'Abu Dhabi KIZAD', color:'#6E6398', assets:1, hours:'24h', shape:'Circle', area:'7.1 km²' }
 ];
 
+const TIMESHEETS = [
+  { driver:'Ramesh K.', asset:'KSP-001', start:'06:30', end:'Active', total:9.5, moving:4.2, idle:3.8, stopped:1.5, bg:'br', badge:'br', ts1:44, ts2:40, ts3:16 },
+  { driver:'Imran S.', asset:'KSP-004', start:'07:00', end:'Active', total:8.9, moving:6.1, idle:1.2, stopped:1.6, bg:'by', badge:'by', ts1:69, ts2:13, ts3:18 },
+  { driver:'Ahmed F.', asset:'KSP-004', start:'06:42', end:'15:30', total:8.8, moving:5.5, idle:0.8, stopped:2.5, bg:'', badge:'by', ts1:63, ts2:9, ts3:28 },
+  { driver:'Ravi M.', asset:'KSP-005', start:'08:00', end:'16:00', total:8.0, moving:5.9, idle:0.6, stopped:1.5, bg:'', badge:'bb', ts1:74, ts2:8, ts3:18 }
+];
+
+const CLIENT_LINKS = [
+  { eta:'11:24 AM · 18 min', status:'En route · Sheikh Zayed Rd', vehicle:'Flatbed · Dubai T-44782', url:'share.dozr.com/t/8fq2' },
+  { eta:'13:10 PM · 45 min', status:'En route · Al Khail Rd', vehicle:'Excavator · Dubai T-11223', url:'share.dozr.com/t/9ab3' },
+  { eta:'15:30 PM · 1h 20m', status:'Stopped · JAFZA', vehicle:'Crane · Dubai T-55881', url:'share.dozr.com/t/1cc4' }
+];
+
+ASSETS.forEach(a => {
+  a.trips = [
+    { name:'Trip 1', start:'06:42', end:'09:15', dist:'61 km', tag:'DEPOT→JAFZA', bg:'bb' },
+    { name:'Trip 2', start:'11:20', end:'13:05', dist:'48 km', tag:'JAFZA→SITE', bg:'bg' },
+    { name:'Trip 3', start:'15:40', end:'17:58', dist:'33 km', tag:'RETURN', bg:'by' }
+  ];
+});
+
 let selectedAsset = null, editingAsset = null, statusFilter = null;
 let cmdkSelIdx = 0, cmdkItems = [];
 
@@ -1594,6 +1479,10 @@ function showScreen(s) {
   if(s==='maint') renderMaintScreen();
   if(s==='util') renderUtilScreen();
   if(s==='roi') renderROI();
+  if(s==='history') renderHistory();
+  if(s==='alerts') renderScreenAlerts();
+  if(s==='client') renderClient();
+  if(s==='timesheet') renderTimesheet();
 }
 
 // ── NAV "MORE" DROPDOWN ──────────────────────────────────────────────
@@ -2574,6 +2463,209 @@ function openCmdK() {
 }
 function closeCmdK() {
   document.getElementById('cmdk').classList.remove('open');
+}
+
+function renderHistory() {
+  const container = document.getElementById('screen-history');
+  if(!container) return;
+  let selA = ASSETS[selectedAsset || 0];
+  let totalTrips = ASSETS.reduce((acc, a) => acc + (a.trips?a.trips.length:0), 0);
+  
+  let html = `
+  <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
+    <div class="sc"><div class="sc-lbl">Trips Today</div><div class="sc-val cw">${totalTrips}</div><div class="sc-sub">Across ${ASSETS.length} assets</div></div>
+    <div class="sc"><div class="sc-lbl">Distance Today</div><div class="sc-val cb">386 km</div><div class="sc-sub">Trucks + loaders</div></div>
+    <div class="sc"><div class="sc-lbl">Avg Speed</div><div class="sc-val cg">47 km/h</div><div class="sc-sub">Moving segments only</div></div>
+    <div class="sc"><div class="sc-lbl">Events Flagged</div><div class="sc-val cr">3</div><div class="sc-sub">1 overspeed · 2 long stops</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:280px 1fr;gap:14px;padding:14px">
+    <div class="panel-box" style="margin-bottom:0">
+      <div class="panel-hdr">Select Trip <span style="font-size:9px;color:var(--dim);font-weight:400">12 months retained</span></div>
+      <div style="padding:10px 12px">
+        <div class="form-row" style="margin-bottom:8px"><label class="form-label">Date</label><input class="form-input" type="date" value="2026-07-09"/></div>
+        ${selA.trips ? selA.trips.map((t,i) => `
+        <div class="trip-item ${i===0?'sel':''}"><div><div style="font-weight:600;font-size:11.5px">${selA.id} · ${t.name}</div><div class="mono" style="font-size:9px;color:var(--dim)">${t.start} → ${t.end} · ${t.dist}</div></div><span class="badge ${t.bg}">${t.tag}</span></div>
+        `).join('') : '<div style="font-size:11px;color:var(--dim)">No trips recorded today</div>'}
+      </div>
+    </div>
+    <div class="panel-box" style="margin-bottom:0">
+      <div class="panel-hdr">${selA.id} · ${selA.make} ${selA.atype} — Trip 1 <span class="badge bb">142 km · ${selA.trips?selA.trips.length:0} trips</span></div>
+      <div style="padding:12px 14px">
+        <svg viewBox="0 0 640 220" style="width:100%;height:220px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+          <path d="M40,190 Q160,150 260,120 Q380,90 460,60 L440,45 Q360,80 250,108 Q150,138 40,175Z" fill="none"/>
+          <polyline points="40,190 120,168 200,140 260,120 320,100 380,90 420,60 460,45 520,38" fill="none" stroke="var(--green)" stroke-width="3"/>
+          <polyline points="380,90 420,60" fill="none" stroke="var(--red)" stroke-width="4"/>
+          <circle cx="40" cy="190" r="6" fill="var(--green)"/><text x="40" y="205" fill="var(--dim)" font-size="8" font-family="Space Mono" text-anchor="middle">DEPOT 06:42</text>
+          <circle cx="260" cy="120" r="6" fill="var(--yellow)"/><text x="260" y="112" fill="var(--yellow)" font-size="8" font-family="Space Mono" text-anchor="middle">STOP 22m</text>
+          <circle cx="400" cy="75" r="6" fill="var(--red)"/><text x="400" y="67" fill="var(--red)" font-size="8" font-family="Space Mono" text-anchor="middle">94 km/h</text>
+          <circle cx="520" cy="38" r="6" fill="var(--red)"/><text x="520" y="30" fill="var(--dim)" font-size="8" font-family="Space Mono" text-anchor="middle">JAFZA 09:15</text>
+        </svg>
+        <div class="scrub-wrap">
+          <div class="scrub-track">
+            <div class="scrub-fill" style="width:52%"></div>
+            <div class="scrub-ev" style="left:38%;background:var(--yellow)" title="Stop 22min"></div>
+            <div class="scrub-ev" style="left:62%;background:var(--red)" title="Overspeed 94km/h"></div>
+            <div class="scrub-handle" style="left:52%">
+              <div class="scrub-lbl" style="color:var(--accent)">08:02</div>
+            </div>
+          </div>
+          <div class="scrub-ends"><span>06:42 · DEPOT</span><span>▶ Playback</span><span>09:15 · JAFZA</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:11px;margin-top:8px">
+          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--green)"><span class="mono" style="color:var(--dim);font-size:9px">06:42</span> &nbsp;Depart DIP Depot</div>
+          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--yellow)"><span class="mono" style="color:var(--dim);font-size:9px">07:38</span> &nbsp;Stopped 22 min · Al Quoz</div>
+          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--red)"><span class="mono" style="color:var(--dim);font-size:9px">08:02</span> &nbsp;Overspeed — 94 km/h in 80 zone</div>
+          <div style="padding:6px 9px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--green)"><span class="mono" style="color:var(--dim);font-size:9px">09:15</span> &nbsp;Arrived JAFZA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+  container.innerHTML = html;
+}
+
+function renderScreenAlerts() {
+  const container = document.getElementById('screen-alerts');
+  if(!container) return;
+  const evs = SIM.getEvents();
+  const getIcon = sev => sev==='critical'?'🚨':sev==='warning'?'⚠️':'ℹ️';
+  const getClass = sev => sev==='critical'?'crit':sev==='warning'?'warn':'info';
+  
+  let newT = Math.floor(Math.random() * 5) + 3;
+  let critT = evs.filter(e=>e.sev==='critical').length;
+  let warnT = evs.filter(e=>e.sev==='warning').length;
+
+  let listHtml = evs.length ? evs.map(e => \`
+    <div class="al-feed-item \${getClass(e.sev)}">
+      <div style="font-size:15px">\${getIcon(e.sev)}</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:12px">\${e.msg} — \${e.aid}</div>
+        <div style="font-size:10.5px;color:var(--dim)">System generated alert for asset</div>
+      </div>
+      <div class="mono" style="font-size:9.5px;color:var(--dim)">\${e.ts}</div>
+    </div>
+  \`).join('') : '<div style="font-size:11px;color:var(--dim)">No alerts available. Run simulation to generate events.</div>';
+
+  container.innerHTML = \`
+  <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
+    <div class="sc"><div class="sc-lbl">New Today</div><div class="sc-val cw">\${newT}</div><div class="sc-sub">Since 00:00</div></div>
+    <div class="sc"><div class="sc-lbl">Critical</div><div class="sc-val cr">\${critT}</div><div class="sc-sub">Needs attention</div></div>
+    <div class="sc"><div class="sc-lbl">Warning</div><div class="sc-val cy">\${warnT}</div><div class="sc-sub">Overspeed · geofence exit</div></div>
+    <div class="sc"><div class="sc-lbl">WhatsApp Sent</div><div class="sc-val cg">3</div><div class="sc-sub">This week: 21</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;padding:14px">
+    <div class="panel-box" style="margin-bottom:0">
+      <div class="panel-hdr">Alerts — Live Feed</div>
+      <div style="padding:10px 12px">
+        \${listHtml}
+      </div>
+    </div>
+    <div>
+      <div class="panel-box">
+        <div class="panel-hdr">WhatsApp Routing Rules</div>
+        <div style="padding:6px 14px">
+          <div class="al-rule-row"><span>Fuel theft</span><span class="badge br">INSTANT</span></div>
+          <div class="al-rule-row"><span>Service overdue</span><span class="badge br">INSTANT</span></div>
+          <div class="al-rule-row"><span>Overspeed</span><span class="badge by">DAILY DIGEST</span></div>
+          <div class="al-rule-row"><span>Geofence exit (after hours)</span><span class="badge by">INSTANT</span></div>
+          <div class="al-rule-row"><span>Device offline &gt;4h</span><span class="badge bb">IN-APP ONLY</span></div>
+        </div>
+      </div>
+      <div class="panel-box" style="margin-bottom:0">
+        <div class="panel-hdr">Notes</div>
+        <div style="padding:10px 14px;font-size:11px;color:var(--dim);line-height:1.6">Rules are configurable per vehicle — threshold, active hours, WhatsApp vs in-app only. Defaults set at install; vendor tunes from here. Not every alert deserves a push — alert fatigue kills the feature.</div>
+      </div>
+    </div>
+  </div>
+  \`;
+}
+
+function renderClient() {
+  const container = document.getElementById('screen-client');
+  if(!container) return;
+  let activeL = CLIENT_LINKS[0]; // mock active
+  
+  container.innerHTML = \`
+  <div class="stats-bar" style="grid-template-columns:repeat(3,1fr)">
+    <div class="sc"><div class="sc-lbl">Active Share Links</div><div class="sc-val cw">\${CLIENT_LINKS.length}</div><div class="sc-sub">Across 4 vendors</div></div>
+    <div class="sc"><div class="sc-lbl">Opened Today</div><div class="sc-val cb">23</div><div class="sc-sub">No login required</div></div>
+    <div class="sc"><div class="sc-lbl">Avg ETA Accuracy</div><div class="sc-val cg">±3 min</div><div class="sc-sub">Live traffic-adjusted</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:22px;padding:24px 14px;align-items:start">
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-body">
+        <div style="text-align:center;font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.5px;margin-bottom:10px">● TRACKING</div>
+        <div style="text-align:center;font-size:32px;margin-bottom:6px">🚛</div>
+        <div style="text-align:center;font-size:13px;font-weight:600;margin-bottom:2px">Estimated arrival</div>
+        <div style="text-align:center;font-size:22px;font-weight:700;color:var(--accent);margin-bottom:14px">\${activeL.eta}</div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+          <div style="font-size:9px;color:var(--dim);font-family:var(--mono);text-transform:uppercase;margin-bottom:3px">Status</div>
+          <div style="font-size:12px;font-weight:600">\${activeL.status}</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:14px">
+          <div style="font-size:9px;color:var(--dim);font-family:var(--mono);text-transform:uppercase;margin-bottom:3px">Vehicle</div>
+          <div style="font-size:12px;font-weight:600">\${activeL.vehicle}</div>
+        </div>
+        <div style="text-align:center;font-family:var(--mono);font-size:9px;color:var(--muted)">Tracked by dozr · zero login</div>
+      </div>
+    </div>
+    <div>
+      <div class="panel-box"><div class="panel-hdr">Feature Notes</div>
+        <div style="padding:10px 14px;font-size:11.5px;color:var(--dim);line-height:1.7">
+          <strong style="color:var(--text)">No login, link only</strong> — client opens a URL on any phone, no app install. Link expires when the job completes, or stays live for long-term hire.<br><br>
+          <strong style="color:var(--text)">ETA front and centre</strong> — calculated live from position + traffic. Everything else is secondary.<br><br>
+          <strong style="color:var(--text)">Strictly scoped data</strong> — one vehicle, current trip only. No fuel, no driver score, no fleet view. The vendor's business data stays the vendor's.<br><br>
+          <strong style="color:var(--text)">"Tracked by dozr" footer</strong> — every shared link is a lead for the next quarter's sales pipeline.
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" onclick="showToast('Link copied — \${activeL.url}')">Copy Share Link</button>
+        <button class="btn-ghost" onclick="showToast('Generating QR code...')">QR Code</button>
+      </div>
+    </div>
+  </div>
+  \`;
+}
+
+function renderTimesheet() {
+  const container = document.getElementById('screen-timesheet');
+  if(!container) return;
+  
+  let totalH = TIMESHEETS.reduce((sum, t) => sum + t.total, 0);
+  let idleH = TIMESHEETS.reduce((sum, t) => sum + t.idle, 0);
+  let movingH = TIMESHEETS.reduce((sum, t) => sum + t.moving, 0);
+  let stopH = TIMESHEETS.reduce((sum, t) => sum + t.stopped, 0);
+
+  container.innerHTML = \`
+  <div class="stats-bar" style="grid-template-columns:repeat(4,1fr)">
+    <div class="sc"><div class="sc-lbl">Drivers Active</div><div class="sc-val cg">\${TIMESHEETS.length}</div><div class="sc-sub">Of \${ASSETS.length} assets</div></div>
+    <div class="sc"><div class="sc-lbl">Total Hours Today</div><div class="sc-val cw">\${totalH.toFixed(1)}h</div><div class="sc-sub">\${TIMESHEETS.length} drivers logged</div></div>
+    <div class="sc"><div class="sc-lbl">Idle Hours</div><div class="sc-val cy">\${idleH.toFixed(1)}h</div><div class="sc-sub">≈ AED \${(idleH*37.5).toFixed(0)} wasted</div></div>
+    <div class="sc"><div class="sc-lbl">Overtime Flags</div><div class="sc-val cr">1</div><div class="sc-sub">Ramesh K. — 9.5h shift</div></div>
+  </div>
+  <div class="panel-box" style="margin:14px">
+    <div class="panel-hdr">Timesheet — Today <span style="display:flex;gap:8px"><button class="btn-ghost" style="margin:0;padding:5px 12px;font-size:10px" onclick="showToast('Opening date range...')">📅 Date Range</button><button class="btn-primary" style="padding:5px 12px;font-size:10px" onclick="showToast('Exporting timesheet...')">⬇ Export</button></span></div>
+    <table class="tbl">
+      <thead><tr><th>Driver</th><th>Vehicle</th><th>Start</th><th>End</th><th>Total</th><th>Moving</th><th>Idle</th><th>Stopped</th><th style="width:120px">Activity</th></tr></thead>
+      <tbody>
+        \${TIMESHEETS.map(t => \`
+        <tr>
+          <td><strong>\${t.driver}</strong></td>
+          <td><span class="badge \${t.badge}">\${t.asset}</span></td>
+          <td class="mono">\${t.start}</td>
+          <td class="mono" \${t.end==='Active'?'style="color:var(--green)"':''}>\${t.end}\${t.end==='Active'?' ●':''}</td>
+          <td class="mono">\${t.total}h</td>
+          <td class="mono">\${t.moving}h</td>
+          <td class="mono cy">\${t.idle}h</td>
+          <td class="mono">\${t.stopped}h</td>
+          <td><div class="ts-bar"><span style="width:\${t.ts1}%"></span><span style="width:\${t.ts2}%"></span><span style="width:\${t.ts3}%"></span></div></td>
+        </tr>\`).join('')}
+        <tr style="background:var(--surface2)"><td colspan="4" style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--dim)">DAILY TOTALS — \${TIMESHEETS.length} DRIVERS</td><td class="mono" style="font-weight:600">\${totalH.toFixed(1)}h</td><td class="mono" style="font-weight:600">\${movingH.toFixed(1)}h</td><td class="mono cy" style="font-weight:600">\${idleH.toFixed(1)}h</td><td class="mono" style="font-weight:600">\${stopH.toFixed(1)}h</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  \`;
 }
 
 function renderCmdK(q) {
