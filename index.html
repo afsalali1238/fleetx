@@ -459,25 +459,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   <div class="map-wrap">
     <div class="map-area" id="map-area">
       <svg class="map-svg" id="map-svg" viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg">
-        <rect width="720" height="460" fill="#c8ddf0"/>
-        <path d="M0,0 L720,0 L720,112 Q600,108 480,106 Q360,104 240,108 Q120,112 0,116Z" fill="#a8c8e8" opacity=".92"/>
-        <path d="M0,116 Q120,112 240,108 Q360,104 480,106 Q600,108 720,112 L720,460 L0,460Z" fill="#e4ecdf"/>
-        <rect x="0" y="116" width="720" height="344" fill="url(#mapdesert)" opacity=".2"/>
+        <foreignObject x="0" y="0" width="720" height="460" pointer-events="none">
+          <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=54.2,24.15,55.85,25.65&amp;layer=mapnik" width="100%" height="100%" frameborder="0" style="border:0; pointer-events:none; opacity: 0.85;"></iframe>
+        </foreignObject>
+        <rect x="0" y="0" width="720" height="460" fill="rgba(255,255,255,0.2)" pointer-events="none" />
         <defs>
-          <pattern id="mapdesert" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-            <circle cx="14" cy="14" r=".7" fill="#c8b890" opacity=".45"/>
-          </pattern>
           <radialGradient id="mdg" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="#f97316" stop-opacity=".15"/>
             <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
           </radialGradient>
         </defs>
-        <line x1="200" y1="460" x2="510" y2="148" stroke="#d2c8b0" stroke-width="3.5" opacity=".6"/>
-        <path d="M0,182 Q80,170 200,165 Q350,159 490,158 Q600,157 710,156" stroke="#d2c8b0" stroke-width="2.2" fill="none" opacity=".55"/>
-        <circle cx="453" cy="162" r="82" fill="url(#mdg)"/>
-        <text x="360" y="68" fill="#7aa8c8" font-size="14" font-family="Space Mono" text-anchor="middle" font-style="italic" opacity=".72">PERSIAN GULF</text>
-        <text x="466" y="200" fill="#7a9070" font-size="10.5" font-family="Space Mono" text-anchor="middle" font-weight="600" opacity=".52">DUBAI</text>
-        <text x="535" y="99" fill="#7a9070" font-size="8.5" font-family="Space Mono" text-anchor="middle" opacity=".46">SHARJAH</text>
+        <circle cx="453" cy="162" r="82" fill="url(#mdg)" pointer-events="none"/>
+        <text x="360" y="68" fill="#1f2937" font-size="14" font-family="Space Mono" text-anchor="middle" font-style="italic" opacity=".72" pointer-events="none">PERSIAN GULF</text>
+        <text x="466" y="200" fill="#1f2937" font-size="10.5" font-family="Space Mono" text-anchor="middle" font-weight="600" opacity=".7" pointer-events="none">DUBAI</text>
+        <text x="535" y="99" fill="#1f2937" font-size="8.5" font-family="Space Mono" text-anchor="middle" opacity=".6" pointer-events="none">SHARJAH</text>
         <text x="55" y="404" fill="#7a9070" font-size="8.5" font-family="Space Mono" text-anchor="middle" opacity=".46">ABU DHABI</text>
 
         <!-- Geofences -->
