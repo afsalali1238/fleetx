@@ -1,0 +1,14 @@
+{
+  "name": "kasper-traccar-simulator",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Kasper Fleet virtual Teltonika devices for Traccar Codec 8E",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
