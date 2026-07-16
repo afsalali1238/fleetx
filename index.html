@@ -2840,16 +2840,26 @@ function downloadCSV(filename, headers, rows) {
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-function exportTimesheetCSV() {
+function downloadXLSX(filename, headers, rows) {
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  XLSX.writeFile(wb, filename);
+}
+function exportData(filename, headers, rows, format) {
+  if(format==='Excel') downloadXLSX(`${filename}.xlsx`, headers, rows);
+  else downloadCSV(`${filename}.csv`, headers, rows);
+}
+function exportTimesheetCSV(format) {
   const headers = ['Driver','Vehicle','Start','End','Total (h)','Moving (h)','Idle (h)','Stopped (h)'];
   const rows = TIMESHEETS.map(t => [t.driver, t.asset, t.start, t.end, t.total, t.moving, t.idle, t.stopped]);
-  downloadCSV(`dozr-timesheet-${new Date().toISOString().slice(0,10)}.csv`, headers, rows);
+  exportData(`dozr-timesheet-${new Date().toISOString().slice(0,10)}`, headers, rows, format||'CSV');
   showToast('Timesheet downloaded');
 }
-function exportFleetReportCSV(reportName) {
+function exportFleetReportCSV(reportName, format) {
   const headers = ['Asset ID','Name','Type','Status','Fuel %','Hours/Odometer','Driver','Driver Score','Maintenance Status'];
   const rows = ASSETS.map(a => [a.id, a.name, a.atype, a.status, a.fuel, a.hours, a.op, a.opScore??'—', a.maint?.some(m=>m.st==='due')?'OVERDUE':a.maint?.some(m=>m.st==='warn')?'DUE SOON':'OK']);
-  downloadCSV(`dozr-${reportName.toLowerCase().replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.csv`, headers, rows);
+  exportData(`dozr-${reportName.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-${new Date().toISOString().slice(0,10)}`, headers, rows, format||'CSV');
   showToast(`${reportName} downloaded`);
 }
 
@@ -2865,9 +2875,8 @@ function generateReportSubmit() {
   const assetsSel = document.getElementById('rr-assets').value;
   const fmt = document.querySelector('input[name="rfmt"]:checked').value;
   const deliver = document.getElementById('rr-deliver').value.trim();
-  exportFleetReportCSV(`${_currentReportName} (${range})`);
-  const pdfNote = fmt!=='CSV' ? ' — PDF needs a rendering library, CSV downloaded instead' : '';
-  showToast(`${_currentReportName} generated for ${assetsSel}, ${range}${pdfNote}${deliver?' · would send to '+deliver:''}`);
+  exportFleetReportCSV(`${_currentReportName} (${range})`, fmt);
+  showToast(`${_currentReportName} downloaded as ${fmt} — ${assetsSel}, ${range}${deliver?' · would send to '+deliver:''}`);
   closeModal('gen-report');
 }
 
