@@ -2674,9 +2674,9 @@ function renderTimesheet() {
   <div class="panel-box" style="margin:14px">
     <div class="panel-hdr">Timesheet — Today <span style="display:flex;gap:8px"><button class="btn-ghost" style="margin:0;padding:5px 12px;font-size:10px" onclick="showToast('Opening date range...')">📅 Date Range</button><button class="btn-primary" style="padding:5px 12px;font-size:10px" onclick="exportTimesheetCSV()">⬇ Export CSV</button></span></div>
     <table class="tbl">
-      <thead><tr><th>Driver</th><th>Vehicle</th><th>Start</th><th>End</th><th>Total</th><th>Moving</th><th>Idle</th><th>Stopped</th><th style="width:120px">Activity</th></tr></thead>
+      <thead><tr><th>Driver</th><th>Vehicle</th><th>Start</th><th>End</th><th>Total</th><th>Moving</th><th>Idle</th><th>Stopped</th><th style="width:120px">Activity</th><th style="width:60px;text-align:center">⬇</th></tr></thead>
       <tbody>
-        ${TIMESHEETS.map(t => `
+        ${TIMESHEETS.map((t,idx) => `
         <tr>
           <td><strong>${t.driver}</strong></td>
           <td><span class="badge ${t.badge}">${t.asset}</span></td>
@@ -2687,8 +2687,14 @@ function renderTimesheet() {
           <td class="mono cy">${t.idle}h</td>
           <td class="mono">${t.stopped}h</td>
           <td><div class="ts-bar"><span style="width:${t.ts1}%"></span><span style="width:${t.ts2}%"></span><span style="width:${t.ts3}%"></span></div></td>
+          <td style="text-align:center">
+            <div style="display:flex;gap:4px;justify-content:center">
+              <button onclick="exportDriverReport('${t.driver}','${t.asset}')" title="Download Driver Report" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--accent)">CSV</button>
+              <button onclick="exportDriverReportXL('${t.driver}','${t.asset}')" title="Download Excel" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--green)">XLS</button>
+            </div>
+          </td>
         </tr>`).join('')}
-        <tr style="background:var(--surface2)"><td colspan="4" style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--dim)">DAILY TOTALS — ${TIMESHEETS.length} DRIVERS</td><td class="mono" style="font-weight:600">${totalH.toFixed(1)}h</td><td class="mono" style="font-weight:600">${movingH.toFixed(1)}h</td><td class="mono cy" style="font-weight:600">${idleH.toFixed(1)}h</td><td class="mono" style="font-weight:600">${stopH.toFixed(1)}h</td><td></td></tr>
+        <tr style="background:var(--surface2)"><td colspan="4" style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--dim)">DAILY TOTALS — ${TIMESHEETS.length} DRIVERS</td><td class="mono" style="font-weight:600">${totalH.toFixed(1)}h</td><td class="mono" style="font-weight:600">${movingH.toFixed(1)}h</td><td class="mono cy" style="font-weight:600">${idleH.toFixed(1)}h</td><td class="mono" style="font-weight:600">${stopH.toFixed(1)}h</td><td></td><td></td></tr>
       </tbody>
     </table>
   </div>
@@ -2856,6 +2862,106 @@ function exportTimesheetCSV(format) {
   exportData(`dozr-timesheet-${new Date().toISOString().slice(0,10)}`, headers, rows, format||'CSV');
   showToast('Timesheet downloaded');
 }
+
+// ── PER-DRIVER / PER-VEHICLE REPORT ───────────────────────────────────
+function exportDriverReport(driver, vehicle) {
+  const ts = TIMESHEETS.find(t => t.driver===driver && t.asset===vehicle);
+  const asset = ASSETS.find(a => a.id===vehicle);
+  const date = new Date().toISOString().slice(0,10);
+  const driverSlug = driver.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+
+  const headers = ['Field','Value'];
+  const rows = [
+    ['Report Date', date],
+    ['Driver', driver],
+    ['Vehicle ID', vehicle],
+    ['Vehicle Name', asset?.name??'—'],
+    ['Vehicle Type', asset?.atype??'—'],
+    ['Site', asset?.site??'—'],
+    ['Shift Start', ts?.start??'—'],
+    ['Shift End', ts?.end??'—'],
+    ['Total Hours (h)', ts?.total??'—'],
+    ['Moving (h)', ts?.moving??'—'],
+    ['Idle (h)', ts?.idle??'—'],
+    ['Stopped (h)', ts?.stopped??'—'],
+    ['Engine Hours', asset?.hours??'—'],
+    ['Fuel Level (%)', asset?.fuel??'—'],
+    ['Fuel Used Today (L)', asset?.todayFuel??'—'],
+    ['Fuel Rate (L/h)', asset?.fuelRate??'—'],
+    ['RPM', asset?.rpm??'—'],
+    ['Engine Load (%)', asset?.load??'—'],
+    ['Coolant Temp (°C)', asset?.coolant??'—'],
+    ['Battery (V)', asset?.batt??'—'],
+    ['GPS Satellites', asset?.sats??'—'],
+    ['DTC Fault Code', asset?.faults??'None'],
+    ['Driver Score', asset?.opScore??'—'],
+    ['Maintenance', asset?.maint?.map(m=>`${m.name} — ${m.st}`).join('; ')??'—'],
+  ];
+  exportData(`dozr-driver-${driverSlug}-${date}`, headers, rows, 'CSV');
+  showToast(`${driver} report downloaded`);
+}
+
+function exportDriverReportXL(driver, vehicle) {
+  const ts = TIMESHEETS.find(t => t.driver===driver && t.asset===vehicle);
+  const asset = ASSETS.find(a => a.id===vehicle);
+  const date = new Date().toISOString().slice(0,10);
+  const driverSlug = driver.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+
+  const summaryData = [
+    ['Field','Value'],
+    ['Report Date', date],
+    ['Driver', driver],
+    ['Vehicle ID', vehicle],
+    ['Vehicle Name', asset?.name??'—'],
+    ['Vehicle Type', asset?.atype??'—'],
+    ['Site', asset?.site??'—'],
+    ['Shift Start', ts?.start??'—'],
+    ['Shift End', ts?.end??'—'],
+    ['Total Hours (h)', ts?.total??'—'],
+    ['Moving (h)', ts?.moving??'—'],
+    ['Idle (h)', ts?.idle??'—'],
+    ['Stopped (h)', ts?.stopped??'—'],
+    ['',''],
+    ['ENGINE & TELEMATICS',''],
+    ['Engine Hours', asset?.hours??'—'],
+    ['Fuel Level (%)', asset?.fuel??'—'],
+    ['Fuel Used Today (L)', asset?.todayFuel??'—'],
+    ['Fuel Rate (L/h)', asset?.fuelRate??'—'],
+    ['RPM', asset?.rpm??'—'],
+    ['Engine Load (%)', asset?.load??'—'],
+    ['Coolant Temp (°C)', asset?.coolant??'—'],
+    ['Battery (V)', asset?.batt??'—'],
+    ['GPS Satellites', asset?.sats??'—'],
+    ['DTC Fault Code', asset?.faults??'None'],
+    ['',''],
+    ['SCORING',''],
+    ['Driver Score', asset?.opScore??'—'],
+    ['Status', asset?.status??'—'],
+    ['Maintenance', asset?.maint?.map(m=>`${m.name} — ${m.st}`).join('; ')??'—'],
+  ];
+
+  if(window.XLSX) {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(summaryData);
+    // Style header row
+    ws['!cols'] = [{wch:28},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Driver Report');
+    // Trip history sheet if available
+    if(asset?.trips?.length) {
+      const tripRows = [['Trip','From','To','Distance','Duration','Max Speed','Events']];
+      asset.trips.forEach(t => tripRows.push([t.name, t.start, t.end, t.dist, t.dur||'—', t.maxSpeed||'—', t.tag||'—']));
+      const ws2 = XLSX.utils.aoa_to_sheet(tripRows);
+      ws2['!cols'] = [{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:14}];
+      XLSX.utils.book_append_sheet(wb, ws2, 'Trip History');
+    }
+    XLSX.writeFile(wb, `dozr-driver-${driverSlug}-${date}.xlsx`);
+    showToast(`${driver} Excel report downloaded`);
+  } else {
+    exportDriverReport(driver, vehicle); // fallback CSV
+    showToast('XLSX library loading — downloaded CSV instead');
+  }
+}
+
 function exportFleetReportCSV(reportName, format) {
   const headers = ['Asset ID','Name','Type','Status','Fuel %','Hours/Odometer','Driver','Driver Score','Maintenance Status'];
   const rows = ASSETS.map(a => [a.id, a.name, a.atype, a.status, a.fuel, a.hours, a.op, a.opScore??'—', a.maint?.some(m=>m.st==='due')?'OVERDUE':a.maint?.some(m=>m.st==='warn')?'DUE SOON':'OK']);
