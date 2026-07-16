@@ -972,6 +972,38 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   </div>
 </div>
 
+<!-- DRIVER DATE RANGE REPORT MODAL -->
+<div class="modal" id="modal-driver-report">
+  <div class="modal-box" style="max-width:420px">
+    <span class="modal-close" onclick="closeModal('driver-report')">×</span>
+    <div class="modal-title" id="dr-title">Driver Report</div>
+    <div class="modal-sub" id="dr-sub">Select the date range for this report.</div>
+    <div class="form-row-2" style="margin-top:14px">
+      <div class="form-row" style="margin-bottom:0"><label class="form-label">From</label><input class="form-input" id="dr-from" type="date"/></div>
+      <div class="form-row" style="margin-bottom:0"><label class="form-label">To</label><input class="form-input" id="dr-to" type="date"/></div>
+    </div>
+    <div class="form-row" style="margin-top:12px"><label class="form-label">Quick Range</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+        <button class="btn-ghost" style="padding:4px 10px;font-size:10px;margin:0" onclick="drSetRange('today')">Today</button>
+        <button class="btn-ghost" style="padding:4px 10px;font-size:10px;margin:0" onclick="drSetRange('week')">This Week</button>
+        <button class="btn-ghost" style="padding:4px 10px;font-size:10px;margin:0" onclick="drSetRange('month')">This Month</button>
+        <button class="btn-ghost" style="padding:4px 10px;font-size:10px;margin:0" onclick="drSetRange('last30')">Last 30 Days</button>
+        <button class="btn-ghost" style="padding:4px 10px;font-size:10px;margin:0" onclick="drSetRange('quarter')">This Quarter</button>
+      </div>
+    </div>
+    <div class="form-row" style="margin-top:12px"><label class="form-label">Format</label>
+      <div style="display:flex;gap:14px;margin-top:5px">
+        <label class="checkbox-row"><input type="radio" name="drfmt" id="drfmt-xl" value="Excel" checked> Excel (.xlsx)</label>
+        <label class="checkbox-row"><input type="radio" name="drfmt" id="drfmt-csv" value="CSV"> CSV</label>
+      </div>
+    </div>
+    <div style="text-align:right;margin-top:18px">
+      <button class="btn-ghost" onclick="closeModal('driver-report')">Cancel</button>
+      <button class="btn-primary" onclick="submitDriverReport()">⬇ Download Report</button>
+    </div>
+  </div>
+</div>
+
 <!-- COMMAND PALETTE -->
 <div class="cmdk" id="cmdk">
   <div class="cmdk-box">
@@ -2689,8 +2721,8 @@ function renderTimesheet() {
           <td><div class="ts-bar"><span style="width:${t.ts1}%"></span><span style="width:${t.ts2}%"></span><span style="width:${t.ts3}%"></span></div></td>
           <td style="text-align:center">
             <div style="display:flex;gap:4px;justify-content:center">
-              <button onclick="exportDriverReport('${t.driver}','${t.asset}')" title="Download Driver Report" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--accent)">CSV</button>
-              <button onclick="exportDriverReportXL('${t.driver}','${t.asset}')" title="Download Excel" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--green)">XLS</button>
+              <button onclick="openDriverReport('${t.driver}','${t.asset}','CSV')" title="Download CSV Report" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--accent)">CSV</button>
+              <button onclick="openDriverReport('${t.driver}','${t.asset}','Excel')" title="Download Excel Report" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--green)">XLS</button>
             </div>
           </td>
         </tr>`).join('')}
@@ -2863,104 +2895,121 @@ function exportTimesheetCSV(format) {
   showToast('Timesheet downloaded');
 }
 
-// ── PER-DRIVER / PER-VEHICLE REPORT ───────────────────────────────────
-function exportDriverReport(driver, vehicle) {
-  const ts = TIMESHEETS.find(t => t.driver===driver && t.asset===vehicle);
-  const asset = ASSETS.find(a => a.id===vehicle);
-  const date = new Date().toISOString().slice(0,10);
-  const driverSlug = driver.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+// ── PER-DRIVER / PER-VEHICLE REPORT WITH DATE RANGE ───────────────────
+let _drDriver = '', _drVehicle = '', _drDefaultFmt = 'Excel';
 
-  const headers = ['Field','Value'];
-  const rows = [
-    ['Report Date', date],
-    ['Driver', driver],
-    ['Vehicle ID', vehicle],
-    ['Vehicle Name', asset?.name??'—'],
-    ['Vehicle Type', asset?.atype??'—'],
-    ['Site', asset?.site??'—'],
-    ['Shift Start', ts?.start??'—'],
-    ['Shift End', ts?.end??'—'],
-    ['Total Hours (h)', ts?.total??'—'],
-    ['Moving (h)', ts?.moving??'—'],
-    ['Idle (h)', ts?.idle??'—'],
-    ['Stopped (h)', ts?.stopped??'—'],
-    ['Engine Hours', asset?.hours??'—'],
-    ['Fuel Level (%)', asset?.fuel??'—'],
-    ['Fuel Used Today (L)', asset?.todayFuel??'—'],
-    ['Fuel Rate (L/h)', asset?.fuelRate??'—'],
-    ['RPM', asset?.rpm??'—'],
-    ['Engine Load (%)', asset?.load??'—'],
-    ['Coolant Temp (°C)', asset?.coolant??'—'],
-    ['Battery (V)', asset?.batt??'—'],
-    ['GPS Satellites', asset?.sats??'—'],
-    ['DTC Fault Code', asset?.faults??'None'],
-    ['Driver Score', asset?.opScore??'—'],
-    ['Maintenance', asset?.maint?.map(m=>`${m.name} — ${m.st}`).join('; ')??'—'],
-  ];
-  exportData(`dozr-driver-${driverSlug}-${date}`, headers, rows, 'CSV');
-  showToast(`${driver} report downloaded`);
+function openDriverReport(driver, vehicle, fmt) {
+  _drDriver  = driver;
+  _drVehicle = vehicle;
+  _drDefaultFmt = fmt || 'Excel';
+  // Set modal title
+  document.getElementById('dr-title').textContent = `${driver} — ${vehicle} Report`;
+  document.getElementById('dr-sub').textContent   = `Driver: ${driver} · Vehicle: ${vehicle}`;
+  // Default to today
+  drSetRange('today');
+  // Pre-select format radio
+  document.querySelectorAll('input[name="drfmt"]').forEach(r => r.checked = (r.value === _drDefaultFmt));
+  openModal('driver-report');
 }
 
-function exportDriverReportXL(driver, vehicle) {
-  const ts = TIMESHEETS.find(t => t.driver===driver && t.asset===vehicle);
-  const asset = ASSETS.find(a => a.id===vehicle);
-  const date = new Date().toISOString().slice(0,10);
-  const driverSlug = driver.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+function drSetRange(preset) {
+  const today = new Date();
+  const fmt   = d => d.toISOString().slice(0, 10);
+  let from = today, to = today;
+  if(preset === 'today') {
+    from = to = today;
+  } else if(preset === 'week') {
+    const day = today.getDay(); // 0=Sun
+    from = new Date(today); from.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+    to   = today;
+  } else if(preset === 'month') {
+    from = new Date(today.getFullYear(), today.getMonth(), 1);
+    to   = today;
+  } else if(preset === 'last30') {
+    from = new Date(today); from.setDate(today.getDate() - 30);
+    to   = today;
+  } else if(preset === 'quarter') {
+    const q = Math.floor(today.getMonth() / 3);
+    from = new Date(today.getFullYear(), q * 3, 1);
+    to   = today;
+  }
+  document.getElementById('dr-from').value = fmt(from);
+  document.getElementById('dr-to').value   = fmt(to);
+}
 
-  const summaryData = [
-    ['Field','Value'],
-    ['Report Date', date],
-    ['Driver', driver],
-    ['Vehicle ID', vehicle],
-    ['Vehicle Name', asset?.name??'—'],
-    ['Vehicle Type', asset?.atype??'—'],
-    ['Site', asset?.site??'—'],
-    ['Shift Start', ts?.start??'—'],
-    ['Shift End', ts?.end??'—'],
-    ['Total Hours (h)', ts?.total??'—'],
-    ['Moving (h)', ts?.moving??'—'],
-    ['Idle (h)', ts?.idle??'—'],
-    ['Stopped (h)', ts?.stopped??'—'],
-    ['',''],
-    ['ENGINE & TELEMATICS',''],
-    ['Engine Hours', asset?.hours??'—'],
-    ['Fuel Level (%)', asset?.fuel??'—'],
-    ['Fuel Used Today (L)', asset?.todayFuel??'—'],
-    ['Fuel Rate (L/h)', asset?.fuelRate??'—'],
-    ['RPM', asset?.rpm??'—'],
-    ['Engine Load (%)', asset?.load??'—'],
-    ['Coolant Temp (°C)', asset?.coolant??'—'],
-    ['Battery (V)', asset?.batt??'—'],
-    ['GPS Satellites', asset?.sats??'—'],
-    ['DTC Fault Code', asset?.faults??'None'],
-    ['',''],
-    ['SCORING',''],
-    ['Driver Score', asset?.opScore??'—'],
-    ['Status', asset?.status??'—'],
-    ['Maintenance', asset?.maint?.map(m=>`${m.name} — ${m.st}`).join('; ')??'—'],
+function submitDriverReport() {
+  const from   = document.getElementById('dr-from').value;
+  const to     = document.getElementById('dr-to').value;
+  const fmt    = document.querySelector('input[name="drfmt"]:checked')?.value || 'Excel';
+  if(!from || !to) { showToast('Please select a date range.'); return; }
+  if(from > to)    { showToast('From date must be before To date.'); return; }
+
+  const ts     = TIMESHEETS.find(t => t.driver === _drDriver && t.asset === _drVehicle);
+  const asset  = ASSETS.find(a => a.id === _drVehicle);
+  const slug   = _drDriver.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const rangeLabel = from === to ? from : `${from} to ${to}`;
+
+  const summaryRows = [
+    ['Field', 'Value'],
+    ['Report Period', rangeLabel],
+    ['Driver', _drDriver],
+    ['Vehicle ID', _drVehicle],
+    ['Vehicle Name', asset?.name ?? '—'],
+    ['Vehicle Type', asset?.atype ?? '—'],
+    ['Site', asset?.site ?? '—'],
+    ['', ''],
+    ['SHIFT DATA (simulated for period)', ''],
+    ['Shift Start', ts?.start ?? '—'],
+    ['Shift End', ts?.end ?? '—'],
+    ['Total Hours (h)', ts?.total ?? '—'],
+    ['Moving (h)', ts?.moving ?? '—'],
+    ['Idle (h)', ts?.idle ?? '—'],
+    ['Stopped (h)', ts?.stopped ?? '—'],
+    ['', ''],
+    ['ENGINE & TELEMATICS', ''],
+    ['Engine Hours', asset?.hours ?? '—'],
+    ['Fuel Level (%)', asset?.fuel ?? '—'],
+    ['Fuel Used Today (L)', asset?.todayFuel ?? '—'],
+    ['Fuel Rate (L/h)', asset?.fuelRate ?? '—'],
+    ['RPM', asset?.rpm ?? '—'],
+    ['Engine Load (%)', asset?.load ?? '—'],
+    ['Coolant Temp (°C)', asset?.coolant ?? '—'],
+    ['Battery (V)', asset?.batt ?? '—'],
+    ['GPS Satellites', asset?.sats ?? '—'],
+    ['DTC Fault Code', asset?.faults ?? 'None'],
+    ['', ''],
+    ['SCORING', ''],
+    ['Driver Score', asset?.opScore ?? '—'],
+    ['Status', asset?.status ?? '—'],
+    ['Maintenance', asset?.maint?.map(m => `${m.name} — ${m.st}`).join('; ') ?? '—'],
   ];
 
-  if(window.XLSX) {
+  const filename = `dozr-${slug}-${from}-to-${to}`;
+
+  if(fmt === 'Excel' && window.XLSX) {
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(summaryData);
-    // Style header row
-    ws['!cols'] = [{wch:28},{wch:40}];
+    // Summary sheet
+    const ws = XLSX.utils.aoa_to_sheet(summaryRows);
+    ws['!cols'] = [{wch:30},{wch:44}];
     XLSX.utils.book_append_sheet(wb, ws, 'Driver Report');
-    // Trip history sheet if available
+    // Trip history sheet
     if(asset?.trips?.length) {
-      const tripRows = [['Trip','From','To','Distance','Duration','Max Speed','Events']];
-      asset.trips.forEach(t => tripRows.push([t.name, t.start, t.end, t.dist, t.dur||'—', t.maxSpeed||'—', t.tag||'—']));
+      const tripRows = [['Trip', 'Start', 'End', 'Distance', 'Max Speed', 'Tag']];
+      asset.trips.forEach(t => tripRows.push([t.name, t.start, t.end, t.dist, t.maxSpeed || '—', t.tag || '—']));
       const ws2 = XLSX.utils.aoa_to_sheet(tripRows);
-      ws2['!cols'] = [{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:14}];
+      ws2['!cols'] = [{wch:14},{wch:12},{wch:12},{wch:14},{wch:14},{wch:14}];
       XLSX.utils.book_append_sheet(wb, ws2, 'Trip History');
     }
-    XLSX.writeFile(wb, `dozr-driver-${driverSlug}-${date}.xlsx`);
-    showToast(`${driver} Excel report downloaded`);
+    XLSX.writeFile(wb, `${filename}.xlsx`);
+    showToast(`${_drDriver} Excel report downloaded (${rangeLabel})`);
   } else {
-    exportDriverReport(driver, vehicle); // fallback CSV
-    showToast('XLSX library loading — downloaded CSV instead');
+    // CSV fallback
+    exportData(filename, summaryRows[0], summaryRows.slice(1), 'CSV');
+    showToast(`${_drDriver} CSV report downloaded (${rangeLabel})`);
   }
+  closeModal('driver-report');
 }
+
 
 function exportFleetReportCSV(reportName, format) {
   const headers = ['Asset ID','Name','Type','Status','Fuel %','Hours/Odometer','Driver','Driver Score','Maintenance Status'];
