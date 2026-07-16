@@ -377,6 +377,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 .al-rule-row:last-child{border-bottom:none}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.106.2/dist/umd/supabase.js" integrity="sha256-6MVI+htiTxo+/n5J4b2QjlkOKQoQWjglES7N1nZf0Xw=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" integrity="sha256-yVBhl8r4CaB1tt7h2g02+xnacVj/6KiOewyWxdhiPJk=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -415,6 +416,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
     </div>
     <div class="live-pill"><span class="live-dot"></span>LIVE &nbsp;<span id="clock">--:--:--</span></div>
     <div class="alert-pill" id="alert-pill" onclick="switchBottomTab(document.querySelectorAll('.tab')[0],'alerts');showScreen('map')">3 ALERTS</div>
+    <button class="btn-ghost" style="border: 1px solid var(--accent); color: var(--accent); padding: 5px 12px; margin-right: 8px;" onclick="fastForwardSim()">⏩ Sim 30m</button>
     <button class="btn-add" onclick="openAddAsset()">+ Add Asset</button>
     <div class="vendor-switch" id="vendor-switch">
       <div class="vendor-chip" onclick="toggleVendorMenu(event)">
@@ -795,21 +797,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   <div class="reports-screen">
     <div style="font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px">Available Reports</div>
     <div class="rep-grid">
-      <div class="rep-card" onclick="openModal('gen-report')"><div class="rep-icon">📊</div><div class="rep-name">Daily Utilisation</div><div class="rep-desc">Engine hours, idle %, distance per asset. Auto-emailed daily.</div><div class="rep-tag" style="background:var(--green-d);color:var(--green)">DAILY · AUTO</div></div>
-      <div class="rep-card" onclick="openModal('gen-report')"><div class="rep-icon">⛽</div><div class="rep-name">Fuel Consumption</div><div class="rep-desc">L/hour per asset, refuels, theft incidents w/ GPS.</div><div class="rep-tag" style="background:var(--yellow-d);color:var(--yellow)">WEEKLY · AUTO</div></div>
-      <div class="rep-card" onclick="openModal('gen-report')"><div class="rep-icon">🔧</div><div class="rep-name">Maintenance Schedule</div><div class="rep-desc">Hours, due intervals, overdue items, service history.</div><div class="rep-tag" style="background:var(--blue-d);color:var(--blue)">ON DEMAND</div></div>
-      <div class="rep-card" onclick="openModal('gen-report')"><div class="rep-icon">👤</div><div class="rep-name">Operator Performance</div><div class="rep-desc">Score, harsh events, hours, idle %, incidents.</div><div class="rep-tag" style="background:var(--yellow-d);color:var(--yellow)">WEEKLY · AUTO</div></div>
-      <div class="rep-card" onclick="openModal('gen-report')"><div class="rep-icon">🌿</div><div class="rep-name">ESG Emissions</div><div class="rep-desc">CO₂ per type per engine hour. UAE compliance.</div><div class="rep-tag" style="background:var(--purple-d);color:var(--purple)">ON DEMAND</div></div>
-      <div class="rep-card" onclick="openModal('gen-report')"><div class="rep-icon">🏗️</div><div class="rep-name">Client Site Report</div><div class="rep-desc">Share-ready PDF: on-site hours, utilisation, fuel.</div><div class="rep-tag" style="background:var(--accent-d);color:var(--accent)">ON DEMAND</div></div>
+      <div class="rep-card" onclick="openGenReport('Daily Utilisation')"><div class="rep-icon">📊</div><div class="rep-name">Daily Utilisation</div><div class="rep-desc">Engine hours, idle %, distance per asset. Auto-emailed daily.</div><div class="rep-tag" style="background:var(--green-d);color:var(--green)">DAILY · AUTO</div></div>
+      <div class="rep-card" onclick="openGenReport('Fuel Consumption')"><div class="rep-icon">⛽</div><div class="rep-name">Fuel Consumption</div><div class="rep-desc">L/hour per asset, refuels, theft incidents w/ GPS.</div><div class="rep-tag" style="background:var(--yellow-d);color:var(--yellow)">WEEKLY · AUTO</div></div>
+      <div class="rep-card" onclick="openGenReport('Maintenance Schedule')"><div class="rep-icon">🔧</div><div class="rep-name">Maintenance Schedule</div><div class="rep-desc">Hours, due intervals, overdue items, service history.</div><div class="rep-tag" style="background:var(--blue-d);color:var(--blue)">ON DEMAND</div></div>
+      <div class="rep-card" onclick="openGenReport('Operator Performance')"><div class="rep-icon">👤</div><div class="rep-name">Operator Performance</div><div class="rep-desc">Score, harsh events, hours, idle %, incidents.</div><div class="rep-tag" style="background:var(--yellow-d);color:var(--yellow)">WEEKLY · AUTO</div></div>
+      <div class="rep-card" onclick="openGenReport('ESG Emissions')"><div class="rep-icon">🌿</div><div class="rep-name">ESG Emissions</div><div class="rep-desc">CO₂ per type per engine hour. UAE compliance.</div><div class="rep-tag" style="background:var(--purple-d);color:var(--purple)">ON DEMAND</div></div>
+      <div class="rep-card" onclick="openGenReport('Client Site Report')"><div class="rep-icon">🏗️</div><div class="rep-name">Client Site Report</div><div class="rep-desc">Share-ready PDF: on-site hours, utilisation, fuel.</div><div class="rep-tag" style="background:var(--accent-d);color:var(--accent)">ON DEMAND</div></div>
     </div>
     <div class="panel-box">
       <div class="panel-hdr">Recently Generated</div>
       <table class="tbl">
         <thead><tr><th>Report</th><th>Period</th><th>Assets</th><th>Generated</th><th>Delivery</th><th>Action</th></tr></thead>
         <tbody>
-          <tr><td><strong>Daily Utilisation</strong></td><td class="mono">14 May 2026</td><td>8 assets</td><td class="mono">15 May 18:00</td><td><span class="badge bg">✓ EMAIL</span></td><td><span style="color:var(--accent);cursor:pointer;font-family:var(--mono);font-size:10px" onclick="showToast('Downloading PDF...')">Download PDF</span></td></tr>
-          <tr><td><strong>Fuel Consumption</strong></td><td class="mono">Week 19</td><td>8 assets</td><td class="mono">11 May 08:00</td><td><span class="badge bg">✓ WHATSAPP</span></td><td><span style="color:var(--accent);cursor:pointer;font-family:var(--mono);font-size:10px" onclick="showToast('Downloading PDF...')">Download PDF</span></td></tr>
-          <tr><td><strong>Client Site Report</strong></td><td class="mono">Apr–May 2026</td><td>KSP-001, 003</td><td class="mono">10 May 14:22</td><td><span class="badge bb">✓ EMAIL</span></td><td><span style="color:var(--accent);cursor:pointer;font-family:var(--mono);font-size:10px" onclick="showToast('Downloading PDF...')">Download PDF</span></td></tr>
+          <tr><td><strong>Daily Utilisation</strong></td><td class="mono">14 May 2026</td><td>8 assets</td><td class="mono">15 May 18:00</td><td><span class="badge bg">✓ EMAIL</span></td><td><span style="color:var(--accent);cursor:pointer;font-family:var(--mono);font-size:10px" onclick="exportFleetReportCSV('Daily Utilisation')">Download CSV</span></td></tr>
+          <tr><td><strong>Fuel Consumption</strong></td><td class="mono">Week 19</td><td>8 assets</td><td class="mono">11 May 08:00</td><td><span class="badge bg">✓ WHATSAPP</span></td><td><span style="color:var(--accent);cursor:pointer;font-family:var(--mono);font-size:10px" onclick="exportFleetReportCSV('Fuel Consumption')">Download CSV</span></td></tr>
+          <tr><td><strong>Client Site Report</strong></td><td class="mono">Apr–May 2026</td><td>KSP-001, 003</td><td class="mono">10 May 14:22</td><td><span class="badge bb">✓ EMAIL</span></td><td><span style="color:var(--accent);cursor:pointer;font-family:var(--mono);font-size:10px" onclick="exportFleetReportCSV('Client Site Report')">Download CSV</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -952,21 +954,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 <div class="modal" id="modal-gen-report">
   <div class="modal-box">
     <span class="modal-close" onclick="closeModal('gen-report')">×</span>
-    <div class="modal-title">Generate Report</div>
+    <div class="modal-title" id="gr-title">Generate Report</div>
     <div class="modal-sub">Select assets, period, and delivery method.</div>
-    <div class="form-row"><label class="form-label">Date Range</label><div class="select-wrap"><select class="form-select"><option>Today</option><option>This Week</option><option selected>This Month</option><option>Custom Range</option></select></div></div>
-    <div class="form-row"><label class="form-label">Assets</label><div class="select-wrap"><select class="form-select"><option selected>All Assets</option><option>Selected Assets...</option></select></div></div>
+    <div class="form-row"><label class="form-label">Date Range</label><div class="select-wrap"><select class="form-select" id="rr-range"><option>Today</option><option>This Week</option><option selected>This Month</option><option>Custom Range</option></select></div></div>
+    <div class="form-row"><label class="form-label">Assets</label><div class="select-wrap"><select class="form-select" id="rr-assets"><option selected>All Assets</option><option>Selected Assets...</option></select></div></div>
     <div class="form-row"><label class="form-label">Format</label>
       <div style="display:flex;gap:14px;margin-top:5px">
-        <label class="checkbox-row"><input type="radio" name="rfmt" checked> PDF</label>
-        <label class="checkbox-row"><input type="radio" name="rfmt"> CSV</label>
-        <label class="checkbox-row"><input type="radio" name="rfmt"> Both</label>
+        <label class="checkbox-row"><input type="radio" name="rfmt" value="Excel" checked> Excel</label>
+        <label class="checkbox-row"><input type="radio" name="rfmt" value="CSV"> CSV</label>
       </div>
     </div>
-    <div class="form-row"><label class="form-label">Deliver To</label><input class="form-input" placeholder="email@company.com or +971 WhatsApp"/></div>
+    <div class="form-row"><label class="form-label">Deliver To</label><input class="form-input" id="rr-deliver" placeholder="email@company.com or +971 WhatsApp"/></div>
     <div style="text-align:right;margin-top:16px">
       <button class="btn-ghost" onclick="closeModal('gen-report')">Cancel</button>
-      <button class="btn-primary" onclick="showToast('Report generated ✓ — Delivery in progress');closeModal('gen-report')">Generate &amp; Send</button>
+      <button class="btn-primary" onclick="generateReportSubmit()">Generate &amp; Send</button>
     </div>
   </div>
 </div>
@@ -1107,6 +1108,10 @@ class SimulatorEngine {
     ];
     this._fired    = new Set();
     this._states   = SimulatorEngine.CONFIGS.map(c => this._init(c));
+    // Fast forward 10 minutes (200 ticks) to pre-populate charts and trails
+    for(let i=0; i<200; i++) {
+      this._states.forEach(s => this._tickAsset(s, 3, new Date().getUTCHours(), Date.now()));
+    }
   }
 
   _init(c) {
@@ -1336,6 +1341,28 @@ class SimulatorEngine {
     this._t0=Date.now()-2e6;
     this._tickFaults(Date.now());
     this._t0=saved;
+  }
+
+  // ── Manual one-off triggers — scenarios that are normally probabilistic/continuous ──
+  forceHarsh(id) {
+    const s = this._by(id || 'KSP-004'); if(!s) return;
+    const brake = Math.random() < 0.5;
+    s.c.opScore = Math.max(40, (s.c.opScore ?? 80) - (1+Math.floor(Math.random()*3)));
+    this._ev(brake?'HARSH_BRAKE':'HARSH_ACCEL','warning',s.c.id,`${brake?'Harsh braking':'Harsh acceleration'} detected — driver score adjusted`);
+  }
+  forceLowSats(id) {
+    const s = this._by(id || 'KSP-005'); if(!s) return;
+    s.sats = 3;
+    this._ev('GPS_DEGRADED','info',s.c.id,'GPS accuracy degraded — 3 satellites visible');
+  }
+  forceGeofenceExit(id) {
+    const s = this._by(id || 'KSP-001'); if(!s) return;
+    this._ev('GEOFENCE_EXIT','critical',s.c.id,`${s.c.id} exited designated zone outside working hours`);
+  }
+  // Fires every demo scenario at once so a fresh page load has data on every screen immediately
+  pushAllDemoData() {
+    ['lf','dtc','theft','online','maint'].forEach(k => this.triggerFault(k));
+    this.forceHarsh(); this.forceLowSats(); this.forceGeofenceExit();
   }
 
   // ── Sync → global ASSETS ─────────────────────────────────────────
@@ -2645,7 +2672,7 @@ function renderTimesheet() {
     <div class="sc"><div class="sc-lbl">Overtime Flags</div><div class="sc-val cr">1</div><div class="sc-sub">Ramesh K. — 9.5h shift</div></div>
   </div>
   <div class="panel-box" style="margin:14px">
-    <div class="panel-hdr">Timesheet — Today <span style="display:flex;gap:8px"><button class="btn-ghost" style="margin:0;padding:5px 12px;font-size:10px" onclick="showToast('Opening date range...')">📅 Date Range</button><button class="btn-primary" style="padding:5px 12px;font-size:10px" onclick="showToast('Exporting timesheet...')">⬇ Export</button></span></div>
+    <div class="panel-hdr">Timesheet — Today <span style="display:flex;gap:8px"><button class="btn-ghost" style="margin:0;padding:5px 12px;font-size:10px" onclick="showToast('Opening date range...')">📅 Date Range</button><button class="btn-primary" style="padding:5px 12px;font-size:10px" onclick="exportTimesheetCSV()">⬇ Export CSV</button></span></div>
     <table class="tbl">
       <thead><tr><th>Driver</th><th>Vehicle</th><th>Start</th><th>End</th><th>Total</th><th>Moving</th><th>Idle</th><th>Stopped</th><th style="width:120px">Activity</th></tr></thead>
       <tbody>
@@ -2802,10 +2829,63 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
+// ── CSV EXPORT — real client-side download, no libraries ──────────────
+function downloadCSV(filename, headers, rows) {
+  const esc = v => `"${String(v).replace(/"/g,'""')}"`;
+  const csv = [headers.map(esc).join(','), ...rows.map(r => r.map(esc).join(','))].join('\r\n');
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function exportTimesheetCSV() {
+  const headers = ['Driver','Vehicle','Start','End','Total (h)','Moving (h)','Idle (h)','Stopped (h)'];
+  const rows = TIMESHEETS.map(t => [t.driver, t.asset, t.start, t.end, t.total, t.moving, t.idle, t.stopped]);
+  downloadCSV(`dozr-timesheet-${new Date().toISOString().slice(0,10)}.csv`, headers, rows);
+  showToast('Timesheet downloaded');
+}
+function exportFleetReportCSV(reportName) {
+  const headers = ['Asset ID','Name','Type','Status','Fuel %','Hours/Odometer','Driver','Driver Score','Maintenance Status'];
+  const rows = ASSETS.map(a => [a.id, a.name, a.atype, a.status, a.fuel, a.hours, a.op, a.opScore??'—', a.maint?.some(m=>m.st==='due')?'OVERDUE':a.maint?.some(m=>m.st==='warn')?'DUE SOON':'OK']);
+  downloadCSV(`dozr-${reportName.toLowerCase().replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.csv`, headers, rows);
+  showToast(`${reportName} downloaded`);
+}
+
+// ── GENERATE REPORT MODAL — real CSV output, not a fake confirmation ──
+let _currentReportName = 'Fleet Report';
+function openGenReport(name) {
+  _currentReportName = name;
+  document.getElementById('gr-title').textContent = `Generate ${name} Report`;
+  openModal('gen-report');
+}
+function generateReportSubmit() {
+  const range = document.getElementById('rr-range').value;
+  const assetsSel = document.getElementById('rr-assets').value;
+  const fmt = document.querySelector('input[name="rfmt"]:checked').value;
+  const deliver = document.getElementById('rr-deliver').value.trim();
+  exportFleetReportCSV(`${_currentReportName} (${range})`);
+  const pdfNote = fmt!=='CSV' ? ' — PDF needs a rendering library, CSV downloaded instead' : '';
+  showToast(`${_currentReportName} generated for ${assetsSel}, ${range}${pdfNote}${deliver?' · would send to '+deliver:''}`);
+  closeModal('gen-report');
+}
+
 // ── CLOCK ─────────────────────────────────────────────────────────────
 function updateClock() {
   const d = new Date();
   document.getElementById('clock').textContent = d.toTimeString().substring(0,8);
+}
+
+// ── FAST FORWARD SIMULATION ───────────────────────────────────────────
+function fastForwardSim() {
+  if(!window.SIM) return;
+  for(let i=0; i<600; i++) { // 600 ticks = 30 minutes
+    window.SIM._states.forEach(s => window.SIM._tickAsset(s, 3, new Date().getUTCHours(), Date.now()));
+  }
+  window.SIM._sync();
+  simulate(); // trigger a render
+  showToast('Fast forwarded simulation by 30 minutes.');
 }
 
 // ── LIVE SIMULATION ──────────────────────────────────────────────────
@@ -3050,6 +3130,13 @@ refreshAll();
 selectAsset(4); // KSP-005 (Liebherr crane)
 initMapInteraction();
 connectSupabase();
+
+// Auto-populate every screen with realistic scenario data on first load —
+// no need to open the demo panel and click through it manually.
+SIM.pushAllDemoData();
+simulate();
+refreshAll();
+if(selectedAsset !== null && ASSETS[selectedAsset]) renderDetail(ASSETS[selectedAsset], selectedAsset);
 </script>
 
 
@@ -3060,11 +3147,15 @@ connectSupabase();
   <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;
     color:var(--accent);margin-bottom:10px">⚡ DEMO CONTROL</div>
   <div style="display:flex;flex-direction:column;gap:6px">
+    <button onclick="SIM.pushAllDemoData();refreshAll();renderAlerts();showToast('Demo data pushed — every screen now has something to look at')" style="padding:9px 10px;background:var(--accent);border:1px solid var(--accent);border-radius:5px;color:#141518;font-family:var(--mono);font-weight:700;font-size:10.5px;cursor:pointer;text-align:center;margin-bottom:2px">🚀 PUSH ALL DEMO DATA</button>
     <button onclick="SIM.triggerFault('lf');renderAlerts()" style="padding:7px 10px;background:rgba(185,28,28,.2);border:1px solid var(--red);border-radius:5px;color:var(--red);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">🔴 KSP-002 — Low Fuel (17%)</button>
     <button onclick="SIM.triggerFault('dtc');renderAlerts()" style="padding:7px 10px;background:rgba(185,28,28,.2);border:1px solid var(--red);border-radius:5px;color:var(--red);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">🔴 KSP-006 — DTC Coolant Fault</button>
     <button onclick="SIM.triggerFault('theft');renderAlerts()" style="padding:7px 10px;background:rgba(185,28,28,.2);border:1px solid var(--red);border-radius:5px;color:var(--red);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">🔴 KSP-003 — Fuel Theft Event</button>
-    <button onclick="SIM.triggerFault('online');renderAlerts()" style="padding:7px 10px;background:rgba(21,128,61,.15);border:1px solid var(--green);border-radius:5px;color:var(--green);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">🟢 KSP-007 — Device Online</button>
+    <button onclick="SIM.triggerFault('online');renderAlerts()" style="padding:7px 10px;background:rgba(21,128,61,.15);border:1px solid var(--green);border-radius:5px;color:var(--green);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">🟢 KSP-007 — Device Online (+ backfill)</button>
     <button onclick="SIM.triggerFault('maint');renderAlerts()" style="padding:7px 10px;background:rgba(146,64,14,.2);border:1px solid var(--yellow);border-radius:5px;color:var(--yellow);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">⚠️ KSP-001 — Maintenance Due</button>
+    <button onclick="SIM.forceHarsh();renderAlerts()" style="padding:7px 10px;background:rgba(146,64,14,.2);border:1px solid var(--yellow);border-radius:5px;color:var(--yellow);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">⚠️ KSP-004 — Harsh Braking Event</button>
+    <button onclick="SIM.forceLowSats();renderAlerts();renderMarkers()" style="padding:7px 10px;background:rgba(37,99,235,.15);border:1px solid var(--blue);border-radius:5px;color:var(--blue);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">🛰️ KSP-005 — GPS Accuracy Degraded</button>
+    <button onclick="SIM.forceGeofenceExit();renderAlerts()" style="padding:7px 10px;background:rgba(185,28,28,.2);border:1px solid var(--red);border-radius:5px;color:var(--red);font-family:var(--mono);font-size:10px;cursor:pointer;text-align:left">🔴 KSP-001 — After-Hours Geofence Exit</button>
     <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1);
       font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.3);text-align:center">
       Ctrl+Shift+D to close
