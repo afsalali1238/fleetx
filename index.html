@@ -378,6 +378,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.106.2/dist/umd/supabase.js" integrity="sha256-6MVI+htiTxo+/n5J4b2QjlkOKQoQWjglES7N1nZf0Xw=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" integrity="sha256-yVBhl8r4CaB1tt7h2g02+xnacVj/6KiOewyWxdhiPJk=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -995,6 +997,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
       <div style="display:flex;gap:14px;margin-top:5px">
         <label class="checkbox-row"><input type="radio" name="drfmt" id="drfmt-xl" value="Excel" checked> Excel (.xlsx)</label>
         <label class="checkbox-row"><input type="radio" name="drfmt" id="drfmt-csv" value="CSV"> CSV</label>
+        <label class="checkbox-row"><input type="radio" name="drfmt" id="drfmt-kasper" value="Kasper"> Kasper Timesheet (PDF)</label>
       </div>
     </div>
     <div style="text-align:right;margin-top:18px">
@@ -1056,7 +1059,7 @@ function latLonToXY(lat, lon) {
 class SimulatorEngine {
 
   static CONFIGS = [
-    { id:'KSP-001', name:'CAT 320 Excavator',        make:'Caterpillar', atype:'Excavator',
+    { id:'KSP-001', name:'CAT 320 Excavator',        make:'Caterpillar', atype:'Excavator', plate:'47296',
       device:'FMC130', site:'Al Quoz Industrial Area, Dubai',
       op:'Mohammed Al Rashidi', opScore:91, opInit:'MR', opColor:'#3D6E96', plan:'120',
       maint:[{name:'Engine Oil & Filter',due:'4,850h',rem:'29h',st:'warn'},
@@ -1065,7 +1068,7 @@ class SimulatorEngine {
       zone:{ lat:25.115, lon:55.196, r:0.0008 },
       initFuel:62, initCoolant:87, initHrs:4821.2, initStatus:'OPERATING' },
 
-    { id:'KSP-002', name:'JCB 3CX Backhoe',          make:'JCB', atype:'Backhoe',
+    { id:'KSP-002', name:'JCB 3CX Backhoe',          make:'JCB', atype:'Backhoe', plate:'51541',
       device:'FMC130', site:'Al Quoz Industrial Area, Dubai',
       op:'Rashid Khalifa', opScore:78, opInit:'RK', opColor:'#6E6398', plan:'80',
       maint:[{name:'Hydraulic Filter',due:'2,350h',rem:'9h',st:'warn'},
@@ -1074,7 +1077,7 @@ class SimulatorEngine {
       zone:{ lat:25.126, lon:55.218, r:0.0008 },
       initFuel:72, initCoolant:85, initHrs:2341.4, initStatus:'OPERATING' },
 
-    { id:'KSP-003', name:'Komatsu WA320 Loader',      make:'Komatsu', atype:'Loader',
+    { id:'KSP-003', name:'Komatsu WA320 Loader',      make:'Komatsu', atype:'Loader', plate:'54518',
       device:'FMC130', site:'Jebel Ali Port, Dubai',
       op:'Abdul Aziz Nasser', opScore:88, opInit:'AN', opColor:'#1F9A6D', plan:'120',
       maint:[{name:'Engine Oil',due:'2,000h',rem:'110h',st:'ok'},
@@ -1083,7 +1086,7 @@ class SimulatorEngine {
       zone:{ lat:25.018, lon:55.082, r:0.0010 },
       initFuel:78, initCoolant:82, initHrs:1890.7, initStatus:'OPERATING' },
 
-    { id:'KSP-004', name:'MAN TGX 18.500 Truck',      make:'MAN', atype:'Truck',
+    { id:'KSP-004', name:'MAN TGX 18.500 Truck',      make:'MAN', atype:'Truck', plate:'62204',
       device:'FMC920', site:'Jebel Ali Port, Dubai',
       op:'Ibrahim Al Mansoori', opScore:84, opInit:'IM', opColor:'#f59e0b', plan:'80',
       maint:[{name:'Oil Change',due:'90,000km',rem:'2,760km',st:'warn'},
@@ -1092,7 +1095,7 @@ class SimulatorEngine {
       zone:{ lat:25.014, lon:55.097, r:0.0018 },
       initFuel:55, initCoolant:0, initHrs:null, initStatus:'IDLE' },
 
-    { id:'KSP-005', name:'Liebherr LTM 1060 Crane',   make:'Liebherr', atype:'Crane',
+    { id:'KSP-005', name:'Liebherr LTM 1060 Crane',   make:'Liebherr', atype:'Crane', plate:'38870',
       device:'FMC130', site:'Dubai Creek Harbour',
       op:'Faisal Al Suwaidi', opScore:92, opInit:'FS', opColor:'#06b6d4', plan:'150',
       maint:[{name:'Annual Crane Inspection',due:'Apr 2026',rem:'Schedule',st:'warn'},
@@ -1101,7 +1104,7 @@ class SimulatorEngine {
       zone:{ lat:25.193, lon:55.317, r:0.0006 },
       initFuel:31, initCoolant:80, initHrs:3102.5, initStatus:'OPERATING' },
 
-    { id:'KSP-006', name:'Volvo EC220E Excavator',    make:'Volvo CE', atype:'Excavator',
+    { id:'KSP-006', name:'Volvo EC220E Excavator',    make:'Volvo CE', atype:'Excavator', plate:'40911',
       device:'FMC130', site:'Dubai Creek Harbour',
       op:'Saeed Mohammed', opScore:71, opInit:'SM', opColor:'#D64545', plan:'150',
       maint:[{name:'Engine Oil & Filter',due:'5,600h',rem:'-12h OVERDUE',st:'due'},
@@ -1111,7 +1114,7 @@ class SimulatorEngine {
       initFuel:70, initCoolant:106, initHrs:5612.2, initStatus:'ALERT',
       initDTC:'SPN:110/FMI:3', initCoolantFault:true },
 
-    { id:'KSP-007', name:'CAT 950GC Loader',          make:'Caterpillar', atype:'Loader',
+    { id:'KSP-007', name:'CAT 950GC Loader',          make:'Caterpillar', atype:'Loader', plate:'29385',
       device:'FMC130', site:'Jebel Ali Port, Dubai',
       op:'—', opScore:null, opInit:'??', opColor:'#9A9CA1', plan:'80',
       maint:[{name:'Engine Oil',due:'1,000h',rem:'10h',st:'warn'}],
@@ -1119,7 +1122,7 @@ class SimulatorEngine {
       zone:{ lat:25.024, lon:55.088, r:0.0009 },
       initFuel:90, initCoolant:0, initHrs:990, initStatus:'OFFLINE' },
 
-    { id:'KSP-008', name:'XCMG XE215C Excavator',    make:'XCMG', atype:'Excavator',
+    { id:'KSP-008', name:'XCMG XE215C Excavator',    make:'XCMG', atype:'Excavator', plate:'71026',
       device:'FMC130', site:'Abu Dhabi KIZAD',
       op:'Tariq Al Zaabi', opScore:80, opInit:'TZ', opColor:'#8b5cf6', plan:'120',
       maint:[{name:'Engine Oil',due:'750h',rem:'38h',st:'ok'},
@@ -2723,6 +2726,7 @@ function renderTimesheet() {
             <div style="display:flex;gap:4px;justify-content:center">
               <button onclick="openDriverReport('${t.driver}','${t.asset}','CSV')" title="Download CSV Report" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--accent)">CSV</button>
               <button onclick="openDriverReport('${t.driver}','${t.asset}','Excel')" title="Download Excel Report" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--green)">XLS</button>
+              <button onclick="openDriverReport('${t.driver}','${t.asset}','Kasper')" title="Download Kasper Timesheet PDF" style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 7px;cursor:pointer;font-size:10px;color:var(--ink)">PDF</button>
             </div>
           </td>
         </tr>`).join('')}
@@ -2895,6 +2899,85 @@ function exportTimesheetCSV(format) {
   showToast('Timesheet downloaded');
 }
 
+// ── KASPER-BRANDED DAILY TRIP LOG PDF (matches Kasper site timesheet template) ──
+// builds one row per trip per date in range, for a single vehicle/driver
+function buildKasperTimesheetRows(vehicleId, from, to) {
+  const asset = ASSETS.find(a => a.id === vehicleId);
+  if(!asset) return [];
+  const dates = [];
+  let d = new Date(from + 'T00:00:00');
+  const endD = new Date(to + 'T00:00:00');
+  while(d <= endD) { dates.push(new Date(d)); d.setDate(d.getDate() + 1); }
+  const rows = [];
+  dates.forEach(dt => {
+    const dd = String(dt.getDate()).padStart(2,'0');
+    const mm = String(dt.getMonth()+1).padStart(2,'0');
+    const dateStr = `${dd}/${mm}/${dt.getFullYear()}`;
+    (asset.trips && asset.trips.length ? asset.trips : [{start:'—',end:'—',tag:'',dist:''}]).forEach(trip => {
+      const remarks = [trip.tag, trip.dist].filter(Boolean).join(' · ');
+      rows.push([dateStr, asset.atype, asset.plate || '—', trip.start, trip.end, '', '1 Trip', remarks || '—']);
+    });
+  });
+  return rows;
+}
+
+// renders the branded Kasper Technologies daily trip log PDF and triggers download
+function generateKasperTimesheetPDF(driver, vehicleId, from, to) {
+  const asset = ASSETS.find(a => a.id === vehicleId);
+  if(!asset || !window.jspdf) { showToast('PDF library not loaded — check connection.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const margin = 32;
+
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(22);
+  doc.setTextColor(20, 21, 24);
+  doc.text('KASPER', margin, 46);
+  doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(90, 95, 102);
+  doc.text('Kasper Technologies FZ-LLC — GPS-as-a-Service', margin, 58);
+
+  const monthLabel = new Date(from + 'T00:00:00').toLocaleDateString('en-GB', { month:'short', year:'2-digit' });
+  const infoBoxW = 260;
+  doc.autoTable({
+    startY: 22,
+    margin: { left: pageW - margin - infoBoxW },
+    tableWidth: infoBoxW,
+    theme: 'grid',
+    styles: { fontSize: 8, cellPadding: 4, textColor: [20,21,24] },
+    columnStyles: { 0: { fontStyle: 'bold', cellWidth: 90 } },
+    body: [
+      ['Document No', ''],
+      ['Company', asset.op !== '—' ? asset.op : 'Pivot Engineering'],
+      ['Month', monthLabel],
+      ['Site', asset.site],
+    ],
+  });
+
+  const rows = buildKasperTimesheetRows(vehicleId, from, to);
+  doc.autoTable({
+    startY: Math.max(doc.lastAutoTable.finalY, 66) + 14,
+    head: [['Date','Vehicle Type','Plate No.','Time In','Time Out','Break Down /\nAbsent Hrs','Total Hrs /\nTrips','Remarks']],
+    body: rows,
+    theme: 'grid',
+    styles: { fontSize: 8, cellPadding: 5, halign: 'center', valign: 'middle', textColor: [20,21,24], lineColor: [216,216,210] },
+    headStyles: { fillColor: [20,21,24], textColor: 255, fontStyle: 'bold' },
+    columnStyles: { 7: { halign: 'left' } },
+  });
+
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 14,
+    theme: 'grid',
+    styles: { fontSize: 8, cellPadding: 8, textColor: [20,21,24], lineColor: [216,216,210] },
+    head: [['Prepared By', 'Approved By']],
+    headStyles: { fillColor: [246,246,243], textColor: [20,21,24], fontStyle: 'bold' },
+    body: [[`Kasper Representative: ${driver}\n\nSignature: ____________________`, 'Client Representative\n\nSignature: ____________________']],
+  });
+
+  const rangeLabel = from === to ? from : `${from}-to-${to}`;
+  doc.save(`kasper-timesheet-${vehicleId}-${rangeLabel}.pdf`);
+  showToast(`Kasper timesheet PDF downloaded (${driver} · ${vehicleId})`);
+}
+
 // ── PER-DRIVER / PER-VEHICLE REPORT WITH DATE RANGE ───────────────────
 let _drDriver = '', _drVehicle = '', _drDefaultFmt = 'Excel';
 
@@ -2943,6 +3026,12 @@ function submitDriverReport() {
   const fmt    = document.querySelector('input[name="drfmt"]:checked')?.value || 'Excel';
   if(!from || !to) { showToast('Please select a date range.'); return; }
   if(from > to)    { showToast('From date must be before To date.'); return; }
+
+  if(fmt === 'Kasper') {
+    generateKasperTimesheetPDF(_drDriver, _drVehicle, from, to);
+    closeModal('driver-report');
+    return;
+  }
 
   const ts     = TIMESHEETS.find(t => t.driver === _drDriver && t.asset === _drVehicle);
   const asset  = ASSETS.find(a => a.id === _drVehicle);
