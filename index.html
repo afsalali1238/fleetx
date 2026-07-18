@@ -3033,68 +3033,37 @@ function submitDriverReport() {
     return;
   }
 
-  const ts     = TIMESHEETS.find(t => t.driver === _drDriver && t.asset === _drVehicle);
   const asset  = ASSETS.find(a => a.id === _drVehicle);
   const slug   = _drDriver.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const rangeLabel = from === to ? from : `${from} to ${to}`;
+  const monthLabel = new Date(from + 'T00:00:00').toLocaleDateString('en-GB', { month:'short', year:'2-digit' });
 
-  const summaryRows = [
-    ['Field', 'Value'],
-    ['Report Period', rangeLabel],
-    ['Driver', _drDriver],
-    ['Vehicle ID', _drVehicle],
-    ['Vehicle Name', asset?.name ?? '—'],
-    ['Vehicle Type', asset?.atype ?? '—'],
+  // Same Kasper trip-log layout as the PDF export — header block + one row per trip per day
+  const tripHead = ['Date','Vehicle Type','Plate No.','Time In','Time Out','Break Down / Absent Hrs','Total Hrs / Trips','Remarks'];
+  const tripRows = buildKasperTimesheetRows(_drVehicle, from, to);
+  const sheetRows = [
+    ['Document No', ''],
+    ['Company', asset?.op !== '—' ? (asset?.op ?? '—') : 'Pivot Engineering'],
+    ['Month', monthLabel],
     ['Site', asset?.site ?? '—'],
     ['', ''],
-    ['SHIFT DATA (simulated for period)', ''],
-    ['Shift Start', ts?.start ?? '—'],
-    ['Shift End', ts?.end ?? '—'],
-    ['Total Hours (h)', ts?.total ?? '—'],
-    ['Moving (h)', ts?.moving ?? '—'],
-    ['Idle (h)', ts?.idle ?? '—'],
-    ['Stopped (h)', ts?.stopped ?? '—'],
-    ['', ''],
-    ['ENGINE & TELEMATICS', ''],
-    ['Engine Hours', asset?.hours ?? '—'],
-    ['Fuel Level (%)', asset?.fuel ?? '—'],
-    ['Fuel Used Today (L)', asset?.todayFuel ?? '—'],
-    ['Fuel Rate (L/h)', asset?.fuelRate ?? '—'],
-    ['RPM', asset?.rpm ?? '—'],
-    ['Engine Load (%)', asset?.load ?? '—'],
-    ['Coolant Temp (°C)', asset?.coolant ?? '—'],
-    ['Battery (V)', asset?.batt ?? '—'],
-    ['GPS Satellites', asset?.sats ?? '—'],
-    ['DTC Fault Code', asset?.faults ?? 'None'],
-    ['', ''],
-    ['SCORING', ''],
-    ['Driver Score', asset?.opScore ?? '—'],
-    ['Status', asset?.status ?? '—'],
-    ['Maintenance', asset?.maint?.map(m => `${m.name} — ${m.st}`).join('; ') ?? '—'],
+    tripHead,
+    ...tripRows,
   ];
 
   const filename = `dozr-${slug}-${from}-to-${to}`;
 
   if(fmt === 'Excel' && window.XLSX) {
     const wb = XLSX.utils.book_new();
-    // Summary sheet
-    const ws = XLSX.utils.aoa_to_sheet(summaryRows);
-    ws['!cols'] = [{wch:30},{wch:44}];
-    XLSX.utils.book_append_sheet(wb, ws, 'Driver Report');
-    // Trip history sheet
-    if(asset?.trips?.length) {
-      const tripRows = [['Trip', 'Start', 'End', 'Distance', 'Max Speed', 'Tag']];
-      asset.trips.forEach(t => tripRows.push([t.name, t.start, t.end, t.dist, t.maxSpeed || '—', t.tag || '—']));
-      const ws2 = XLSX.utils.aoa_to_sheet(tripRows);
-      ws2['!cols'] = [{wch:14},{wch:12},{wch:12},{wch:14},{wch:14},{wch:14}];
-      XLSX.utils.book_append_sheet(wb, ws2, 'Trip History');
-    }
+    const ws = XLSX.utils.aoa_to_sheet(sheetRows);
+    ws['!cols'] = [{wch:12},{wch:14},{wch:11},{wch:10},{wch:10},{wch:20},{wch:16},{wch:34}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Timesheet');
     XLSX.writeFile(wb, `${filename}.xlsx`);
-    showToast(`${_drDriver} Excel report downloaded (${rangeLabel})`);
+    showToast(`${_drDriver} Excel timesheet downloaded (${rangeLabel})`);
   } else {
-    // CSV fallback
-    exportData(filename, summaryRows[0], summaryRows.slice(1), 'CSV');
-    showToast(`${_drDriver} CSV report downloaded (${rangeLabel})`);
+    // CSV fallback — same header block + trip table as the Excel/PDF exports
+    exportData(filename, sheetRows[0], sheetRows.slice(1), 'CSV');
+    showToast(`${_drDriver} CSV timesheet downloaded (${rangeLabel})`);
   }
   closeModal('driver-report');
 }
